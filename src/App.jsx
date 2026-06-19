@@ -136,10 +136,25 @@ const parkOrteRef = useRef([]);
   const [infoOffen, setInfoOffen] = useState(false);
   const [routeAuswahlOffen, setRouteAuswahlOffen] = useState(false);
   const [favoriten, setFavoriten] = useState([]);
-  const [favoritenOffen, setFavoritenOffen] = useState(false);
-  const [sprache, setSprache] = useState("de");
+const [favoritenOffen, setFavoritenOffen] = useState(false);
 
-  const t = TEXTE[sprache];
+const [sprache, setSprache] = useState(() => {
+  const gespeicherteSprache = localStorage.getItem("coolWienSprache");
+
+  if (gespeicherteSprache && TEXTE[gespeicherteSprache]) {
+    return gespeicherteSprache;
+  }
+
+  const browserSprache = navigator.language?.slice(0, 2);
+
+  if (TEXTE[browserSprache]) {
+    return browserSprache;
+  }
+
+  return "en";
+});
+
+const t = TEXTE[sprache];
 
   useEffect(() => {
     const map = L.map("map", {
@@ -790,11 +805,15 @@ ${t.reportNotePlaceholder}`
   </div>
 
   <button
-    className="language-button"
-    onClick={() => setSprache(sprache === "de" ? "en" : "de")}
-  >
-    {sprache === "de" ? "EN" : "DE"}
-  </button>
+  className="language-button"
+  onClick={() => {
+    const neueSprache = sprache === "de" ? "en" : "de";
+    setSprache(neueSprache);
+    localStorage.setItem("coolWienSprache", neueSprache);
+  }}
+>
+  {sprache === "de" ? "EN" : "DE"}
+</button>
 </div>
 
         <div className="sheet-content">
