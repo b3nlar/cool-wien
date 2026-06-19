@@ -595,3 +595,14 @@ button:active {
   font-size: 14px;
   font-weight: 650;
 }
+
+.result-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.result-actions button {
+  font-size: 14px;
+  padding: 12px 10px;
+}

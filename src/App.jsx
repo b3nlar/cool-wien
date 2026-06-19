@@ -48,6 +48,14 @@ const TEXTE = {
 coolDownLoaded: "Abkühlungsorte geladen",
 fountainNearPark: "Trinkbrunnen ca.",
 fromPark: "vom Park entfernt",
+reportPlace: "Datenfehler melden",
+reportSubject: "Cool Wien Datenfeedback",
+reportIntro: "Ich möchte einen Datenfehler melden:",
+reportPlaceLabel: "Ort:",
+reportTypeLabel: "Typ:",
+reportCoordinatesLabel: "Koordinaten:",
+reportNoteLabel: "Hinweis:",
+reportNotePlaceholder: "Bitte hier beschreiben, was nicht stimmt.",
   },
   en: {
     appName: "Cool Vienna",
@@ -89,6 +97,14 @@ fromPark: "vom Park entfernt",
 coolDownLoaded: "Cool-down spots loaded",
 fountainNearPark: "Water fountain approx.",
 fromPark: "from the park",
+reportPlace: "Report data issue",
+reportSubject: "Cool Vienna data feedback",
+reportIntro: "I would like to report a data issue:",
+reportPlaceLabel: "Place:",
+reportTypeLabel: "Type:",
+reportCoordinatesLabel: "Coordinates:",
+reportNoteLabel: "Note:",
+reportNotePlaceholder: "Please describe what is wrong here.",
   },
 };
 
@@ -660,6 +676,28 @@ if (ort.typ === "cooldown") {
     mapRef.current.setView([favorit.latitude, favorit.longitude], 17);
   }
 
+function ortMelden() {
+  if (!naechsterOrt) return;
+
+  const betreff = encodeURIComponent(t.reportSubject);
+
+  const text = encodeURIComponent(
+    `${t.reportIntro}
+
+${t.reportPlaceLabel} ${ortName(naechsterOrt)}
+${t.reportTypeLabel} ${naechsterOrt.typ}
+${t.reportCoordinatesLabel} ${naechsterOrt.latitude}, ${naechsterOrt.longitude}
+
+${t.reportNoteLabel}
+${t.reportNotePlaceholder}`
+  );
+
+  const mailAdresse = "benjamin.larcher@wko.at";
+  const url = `mailto:${mailAdresse}?subject=${betreff}&body=${text}`;
+
+  window.location.href = url;
+}
+
   function routeAppleMapsOeffnen() {
     if (!naechsterOrt) return;
 
@@ -815,9 +853,15 @@ if (ort.typ === "cooldown") {
                 </p>
               </div>
 
-              <button className="secondary-button" onClick={speichereFavorit}>
-                {t.saveFavorite}
-              </button>
+              <div className="result-actions">
+  <button className="secondary-button" onClick={speichereFavorit}>
+    {t.saveFavorite}
+  </button>
+
+  <button className="secondary-button" onClick={ortMelden}>
+    {t.reportPlace}
+  </button>
+</div>
 
               <button onClick={() => setRouteAuswahlOffen(!routeAuswahlOffen)}>
                 {t.openRoute}
