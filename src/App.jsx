@@ -483,16 +483,19 @@ if (ort.typ === "cooldown") {
 }
 
   function aktualisiereNaechstenOrt(meinStandort) {
-    setRouteAuswahlOffen(false);
+  setRouteAuswahlOffen(false);
 
-    if (!meinStandort || orteRef.current.length === 0) return;
+  if (!meinStandort || orteRef.current.length === 0) return;
 
-    const naechster = findeNaechstenOrt(meinStandort);
+  const naechster = findeNaechstenOrt(meinStandort);
 
-    setNaechsterOrt(naechster);
+  setNaechsterOrt(naechster);
+  zeigeBeideAufDerKarte(meinStandort, naechster);
+
+  setTimeout(() => {
     markiereNaechstenOrt(naechster);
-    zeigeBeideAufDerKarte(meinStandort, naechster);
-  }
+  }, 300);
+}
 
   function sucheMeinenStandort() {
     setPanelOffen(false);
@@ -623,19 +626,25 @@ if (ort.typ === "cooldown") {
     });
 
     markerRef.current = L.marker([ort.latitude, ort.longitude], {
-      icon: zielIcon,
-    })
-      .addTo(map)
-      .bindPopup(
-  `${ortName(ort)}<br>${ort.entfernung} ${t.metersAway}<br>ca. ${
-    ort.gehzeit
-  } ${t.walking}${
-    ort.typ === "cooldown"
-      ? `<br>${t.fountainNearPark} ${ort.brunnenEntfernung} m ${t.fromPark}<br>${t.coolScore}: ${ort.coolScore}/10`
-      : ""
-  }`
-)
-      .openPopup();
+  icon: zielIcon,
+})
+  .addTo(map)
+  .bindPopup(
+    `${ortName(ort)}<br>${ort.entfernung} ${t.metersAway}<br>ca. ${
+      ort.gehzeit
+    } ${t.walking}${
+      ort.typ === "cooldown"
+        ? `<br>${t.fountainNearPark} ${ort.brunnenEntfernung} m ${t.fromPark}<br>${t.coolScore}: ${ort.coolScore}/10`
+        : ""
+    }`,
+    {
+      autoPan: true,
+      keepInView: true,
+      maxWidth: 260,
+      autoPanPadding: [40, 160],
+    }
+  )
+  .openPopup();
   }
 
   function handleTouchStart(event) {
@@ -722,8 +731,7 @@ ${t.reportNoteLabel}
 ${t.reportNotePlaceholder}`
   );
 
-  const mailAdresse = "benjamin.larcher@wko.at";
-  const url = `mailto:${mailAdresse}?subject=${betreff}&body=${text}`;
+  const url = `mailto:?subject=${betreff}&body=${text}`;
 
   window.location.href = url;
 }
