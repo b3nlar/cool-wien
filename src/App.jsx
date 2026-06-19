@@ -14,6 +14,7 @@ export default function App() {
   const standortMarkerRef = useRef(null);
   const letzterStandortRef = useRef(null);
   const alleMarkerRef = useRef([]);
+  const touchStartYRef = useRef(null);
 
   const [anzahl, setAnzahl] = useState(0);
   const [status, setStatus] = useState("Lade Daten ...");
@@ -350,6 +351,28 @@ export default function App() {
       .openPopup();
   }
 
+function handleTouchStart(event) {
+  touchStartYRef.current = event.touches[0].clientY;
+}
+
+function handleTouchEnd(event) {
+  if (touchStartYRef.current === null) return;
+
+  const startY = touchStartYRef.current;
+  const endY = event.changedTouches[0].clientY;
+  const unterschied = startY - endY;
+
+  if (unterschied > 40) {
+    setPanelOffen(true);
+  }
+
+  if (unterschied < -40) {
+    setPanelOffen(false);
+  }
+
+  touchStartYRef.current = null;
+}
+
   function routeOeffnen() {
     if (!naechsterOrt) return;
 
@@ -363,7 +386,11 @@ export default function App() {
 
   return (
   <div className="app">
-    <div className={panelOffen ? "box open" : "box closed"}>
+    <div
+  className={panelOffen ? "box open" : "box closed"}
+  onTouchStart={handleTouchStart}
+  onTouchEnd={handleTouchEnd}
+>
       <h1>Cool Wien</h1>
 
       <div
