@@ -10,31 +10,40 @@ const PARK_URL = "/parks.json";
 const TEXTE = {
   de: {
     appName: "Cool Wien",
+    claim: "Wasser, Schatten & Abkühlung in deiner Nähe",
+    compactDefault: "Finde kühle Orte in Wien",
+
     water: "💧 Wasser",
     wc: "🚻 WC",
     shade: "🌳 Schatten",
+    coolDown: "🥵 Abkühlen",
+
     showAll: "Alle anzeigen",
     hideAll: "Alle ausblenden",
     favorites: "⭐ Favoriten",
     info: "ℹ️ Info",
-    searchNearby: "In meiner Nähe suchen",
+    findNearest: "Nächsten Ort finden",
     nextPlace: "Nächster Ort:",
     saveFavorite: "⭐ Favorit speichern",
     openRoute: "Route öffnen",
     appleMaps: "Apple Maps",
     googleMaps: "Google Maps",
     noFavorites: "Noch keine Favoriten gespeichert.",
+
     privacyTitle: "Datenschutz:",
     privacyText:
       "Cool Wien speichert deinen Standort nicht. Die Suche nach Orten in deiner Nähe passiert nur auf deinem Gerät.",
     sourcesTitle: "Datenquellen:",
     sourcesText: "Stadt Wien – data.wien.gv.at, OpenStreetMap und CARTO.",
+
     metersAway: "m entfernt",
     walking: "Min. zu Fuß",
+
     waterFountainName: "Trinkbrunnen 💧",
     publicToiletName: "Öffentliche WC-Anlage 🚻",
     parkName: "Park 🌳",
     youAreHere: "Du bist ungefähr hier",
+
     loadingData: "Lade Daten ...",
     loadingWater: "Lade Trinkbrunnen ...",
     loadingWc: "Lade WCs ...",
@@ -42,52 +51,76 @@ const TEXTE = {
     waterLoaded: "Trinkbrunnen geladen",
     wcLoaded: "WCs geladen",
     parksLoaded: "Parks geladen",
+    coolDownLoaded: "Abkühlungsorte geladen",
     loadingError: "Fehler beim Laden",
     locationError: "Dein Standort konnte nicht gefunden werden.",
-    coolDown: "🥵 Abkühlen",
-coolDownLoaded: "Abkühlungsorte geladen",
-fountainNearPark: "Trinkbrunnen ca.",
-fromPark: "vom Park entfernt",
-reportPlace: "Datenfehler melden",
-reportSubject: "Cool Wien Datenfeedback",
-reportIntro: "Ich möchte einen Datenfehler melden:",
-reportPlaceLabel: "Ort:",
-reportTypeLabel: "Typ:",
-reportCoordinatesLabel: "Koordinaten:",
-reportNoteLabel: "Hinweis:",
-reportNotePlaceholder: "Bitte hier beschreiben, was nicht stimmt.",
-coolScore: "Cool Score",
-claim: "Wasser, Schatten & Abkühlung in deiner Nähe",
-compactDefault: "Finde kühle Orte in Wien",
-findNearest: "Nächsten Ort finden",
+
+    fountainNearPark: "Trinkbrunnen ca.",
+    fromPark: "vom Park entfernt",
+    coolScore: "Cool Score",
+
+    reportPlace: "Datenfehler melden",
+    reportSubject: "Cool Wien Datenfeedback",
+    reportIntro: "Ich möchte einen Datenfehler melden:",
+    reportPlaceLabel: "Ort:",
+    reportTypeLabel: "Typ:",
+    reportCoordinatesLabel: "Koordinaten:",
+    reportNoteLabel: "Hinweis:",
+    reportNotePlaceholder: "Bitte hier beschreiben, was nicht stimmt.",
+
+    introTitle: "Willkommen bei Cool Wien 👋",
+    introWaterTitle: "Wasser",
+    introWaterText: "Finde Trinkbrunnen in deiner Nähe.",
+    introWcTitle: "WC",
+    introWcText: "Finde öffentliche WCs in Wien.",
+    introShadeTitle: "Schatten",
+    introShadeText: "Finde Parks und schattige Orte.",
+    introCoolTitle: "Abkühlen",
+    introCoolText: "Kombiniert Parks mit Trinkbrunnen in der Nähe.",
+    introScoreTitle: "Cool Score",
+    introScoreText:
+      "Bewertet, wie gut ein Ort zum Abkühlen ist – mit Blick auf Nähe zu dir und Trinkbrunnen in Parknähe.",
+    introPrivacy:
+      "Dein Standort wird nicht gespeichert und nur auf deinem Gerät verwendet.",
+    introButton: "Los geht’s",
   },
+
   en: {
     appName: "Cool Vienna",
+    claim: "Water, shade & cool-down spots near you",
+    compactDefault: "Find cool places in Vienna",
+
     water: "💧 Water",
     wc: "🚻 WC",
     shade: "🌳 Shade",
+    coolDown: "🥵 Cool down",
+
     showAll: "Show all",
     hideAll: "Hide all",
     favorites: "⭐ Favorites",
     info: "ℹ️ Info",
-    searchNearby: "Search nearby",
+    findNearest: "Find nearest place",
     nextPlace: "Nearest place:",
     saveFavorite: "⭐ Save favorite",
     openRoute: "Open route",
     appleMaps: "Apple Maps",
     googleMaps: "Google Maps",
     noFavorites: "No favorites saved yet.",
+
     privacyTitle: "Privacy:",
     privacyText:
       "Cool Vienna does not store your location. Nearby search happens only on your device.",
     sourcesTitle: "Data sources:",
     sourcesText: "City of Vienna – data.wien.gv.at, OpenStreetMap and CARTO.",
+
     metersAway: "m away",
     walking: "min. walk",
+
     waterFountainName: "Water fountain 💧",
     publicToiletName: "Public toilet 🚻",
     parkName: "Park 🌳",
     youAreHere: "You are approximately here",
+
     loadingData: "Loading data ...",
     loadingWater: "Loading water fountains ...",
     loadingWc: "Loading public toilets ...",
@@ -95,24 +128,38 @@ findNearest: "Nächsten Ort finden",
     waterLoaded: "Water fountains loaded",
     wcLoaded: "Public toilets loaded",
     parksLoaded: "Parks loaded",
+    coolDownLoaded: "Cool-down spots loaded",
     loadingError: "Error while loading",
     locationError: "Your location could not be found.",
-    coolDown: "🥵 Cool down",
-coolDownLoaded: "Cool-down spots loaded",
-fountainNearPark: "Water fountain approx.",
-fromPark: "from the park",
-reportPlace: "Report data issue",
-reportSubject: "Cool Vienna data feedback",
-reportIntro: "I would like to report a data issue:",
-reportPlaceLabel: "Place:",
-reportTypeLabel: "Type:",
-reportCoordinatesLabel: "Coordinates:",
-reportNoteLabel: "Note:",
-reportNotePlaceholder: "Please describe what is wrong here.",
-coolScore: "Cool score",
-claim: "Water, shade & cool-down spots near you",
-compactDefault: "Find cool places in Vienna",
-findNearest: "Find nearest place",
+
+    fountainNearPark: "Water fountain approx.",
+    fromPark: "from the park",
+    coolScore: "Cool score",
+
+    reportPlace: "Report data issue",
+    reportSubject: "Cool Vienna data feedback",
+    reportIntro: "I would like to report a data issue:",
+    reportPlaceLabel: "Place:",
+    reportTypeLabel: "Type:",
+    reportCoordinatesLabel: "Coordinates:",
+    reportNoteLabel: "Note:",
+    reportNotePlaceholder: "Please describe what is wrong here.",
+
+    introTitle: "Welcome to Cool Vienna 👋",
+    introWaterTitle: "Water",
+    introWaterText: "Find water fountains near you.",
+    introWcTitle: "WC",
+    introWcText: "Find public toilets in Vienna.",
+    introShadeTitle: "Shade",
+    introShadeText: "Find parks and shady places.",
+    introCoolTitle: "Cool down",
+    introCoolText: "Combines parks with nearby water fountains.",
+    introScoreTitle: "Cool Score",
+    introScoreText:
+      "Rates how good a place is for cooling down – based on distance to you and nearby water fountains.",
+    introPrivacy:
+      "Your location is not stored and is only used on your device.",
+    introButton: "Get started",
   },
 };
 
@@ -120,7 +167,7 @@ export default function App() {
   const mapRef = useRef(null);
   const orteRef = useRef([]);
   const wasserOrteRef = useRef([]);
-const parkOrteRef = useRef([]);
+  const parkOrteRef = useRef([]);
   const markerRef = useRef(null);
   const standortMarkerRef = useRef(null);
   const letzterStandortRef = useRef(null);
@@ -136,25 +183,29 @@ const parkOrteRef = useRef([]);
   const [infoOffen, setInfoOffen] = useState(false);
   const [routeAuswahlOffen, setRouteAuswahlOffen] = useState(false);
   const [favoriten, setFavoriten] = useState([]);
-const [favoritenOffen, setFavoritenOffen] = useState(false);
+  const [favoritenOffen, setFavoritenOffen] = useState(false);
 
-const [sprache, setSprache] = useState(() => {
-  const gespeicherteSprache = localStorage.getItem("coolWienSprache");
+  const [sprache, setSprache] = useState(() => {
+    const gespeicherteSprache = localStorage.getItem("coolWienSprache");
 
-  if (gespeicherteSprache && TEXTE[gespeicherteSprache]) {
-    return gespeicherteSprache;
-  }
+    if (gespeicherteSprache && TEXTE[gespeicherteSprache]) {
+      return gespeicherteSprache;
+    }
 
-  const browserSprache = navigator.language?.slice(0, 2);
+    const browserSprache = navigator.language?.slice(0, 2);
 
-  if (TEXTE[browserSprache]) {
-    return browserSprache;
-  }
+    if (TEXTE[browserSprache]) {
+      return browserSprache;
+    }
 
-  return "en";
-});
+    return "en";
+  });
 
-const t = TEXTE[sprache];
+  const [introOffen, setIntroOffen] = useState(() => {
+    return localStorage.getItem("coolWienIntroGesehen") !== "true";
+  });
+
+  const t = TEXTE[sprache];
 
   useEffect(() => {
     const map = L.map("map", {
@@ -209,6 +260,17 @@ const t = TEXTE[sprache];
     }
   }, [sprache]);
 
+  function spracheWechseln() {
+    const neueSprache = sprache === "de" ? "en" : "de";
+    setSprache(neueSprache);
+    localStorage.setItem("coolWienSprache", neueSprache);
+  }
+
+  function introSchliessen() {
+    setIntroOffen(false);
+    localStorage.setItem("coolWienIntroGesehen", "true");
+  }
+
   function ortName(ort) {
     if (!ort) return "";
 
@@ -227,13 +289,15 @@ const t = TEXTE[sprache];
 
       return t.parkName;
     }
-if (ort.typ === "cooldown") {
-  if (ort.parkName) {
-    return `${ort.parkName} 🌳 + 💧`;
-  }
 
-  return `${t.parkName} + 💧`;
-}
+    if (ort.typ === "cooldown") {
+      if (ort.parkName) {
+        return `${ort.parkName} 🌳 + 💧`;
+      }
+
+      return `${t.parkName} + 💧`;
+    }
+
     return ort.name || "";
   }
 
@@ -323,6 +387,7 @@ if (ort.typ === "cooldown") {
           typ: "wasser",
         });
       });
+
       wasserOrteRef.current = orteRef.current;
 
       setAnzahl(orteRef.current.length);
@@ -403,6 +468,7 @@ if (ort.typ === "cooldown") {
           parkName,
         });
       });
+
       parkOrteRef.current = orteRef.current;
 
       setAnzahl(orteRef.current.length);
@@ -415,108 +481,110 @@ if (ort.typ === "cooldown") {
   }
 
   async function ladeAbkuehlen() {
-  setModus("cooldown");
-  setStatus(t.loadingParks);
-  setRouteAuswahlOffen(false);
-  entferneZielMarker();
+    setModus("cooldown");
+    setStatus(t.loadingParks);
+    setRouteAuswahlOffen(false);
+    entferneZielMarker();
 
-  try {
-    if (wasserOrteRef.current.length === 0) {
-      const wasserAntwort = await fetch(TRINKBRUNNEN_URL);
-      const wasserDaten = await wasserAntwort.json();
-      const wasserFeatures = wasserDaten.features || [];
+    try {
+      if (wasserOrteRef.current.length === 0) {
+        const wasserAntwort = await fetch(TRINKBRUNNEN_URL);
+        const wasserDaten = await wasserAntwort.json();
+        const wasserFeatures = wasserDaten.features || [];
 
-      wasserOrteRef.current = wasserFeatures
-        .map((ort) => {
-          const koordinaten = ort.geometry?.coordinates;
-          if (!koordinaten) return null;
+        wasserOrteRef.current = wasserFeatures
+          .map((ort) => {
+            const koordinaten = ort.geometry?.coordinates;
+            if (!koordinaten) return null;
 
-          return {
-            latitude: koordinaten[1],
-            longitude: koordinaten[0],
-            typ: "wasser",
-          };
-        })
-        .filter(Boolean);
-    }
+            return {
+              latitude: koordinaten[1],
+              longitude: koordinaten[0],
+              typ: "wasser",
+            };
+          })
+          .filter(Boolean);
+      }
 
-    if (parkOrteRef.current.length === 0) {
-      const parkAntwort = await fetch(PARK_URL);
-      const parkDaten = await parkAntwort.json();
-      const parkFeatures = parkDaten.features || [];
+      if (parkOrteRef.current.length === 0) {
+        const parkAntwort = await fetch(PARK_URL);
+        const parkDaten = await parkAntwort.json();
+        const parkFeatures = parkDaten.features || [];
 
-      parkOrteRef.current = parkFeatures
-        .map((ort) => {
-          const koordinaten = ort.geometry?.coordinates;
-          if (!koordinaten) return null;
+        parkOrteRef.current = parkFeatures
+          .map((ort) => {
+            const koordinaten = ort.geometry?.coordinates;
+            if (!koordinaten) return null;
 
-          const parkName =
-            ort.properties?.ANL_NAME ||
-            ort.properties?.PARKANLAGE ||
-            ort.properties?.NAME ||
-            "";
+            const parkName =
+              ort.properties?.ANL_NAME ||
+              ort.properties?.PARKANLAGE ||
+              ort.properties?.NAME ||
+              "";
 
-          return {
-            latitude: koordinaten[1],
-            longitude: koordinaten[0],
-            typ: "park",
-            parkName,
-          };
-        })
-        .filter(Boolean);
-    }
+            return {
+              latitude: koordinaten[1],
+              longitude: koordinaten[0],
+              typ: "park",
+              parkName,
+            };
+          })
+          .filter(Boolean);
+      }
 
-    const abkuehlOrte = parkOrteRef.current.map((park) => {
-      let naechsterBrunnen = null;
-      let brunnenEntfernung = Infinity;
+      const abkuehlOrte = parkOrteRef.current.map((park) => {
+        let naechsterBrunnen = null;
+        let brunnenEntfernung = Infinity;
 
-      wasserOrteRef.current.forEach((brunnen) => {
-        const entfernung = mapRef.current.distance(
-          [park.latitude, park.longitude],
-          [brunnen.latitude, brunnen.longitude]
-        );
+        wasserOrteRef.current.forEach((brunnen) => {
+          const entfernung = mapRef.current.distance(
+            [park.latitude, park.longitude],
+            [brunnen.latitude, brunnen.longitude]
+          );
 
-        if (entfernung < brunnenEntfernung) {
-          brunnenEntfernung = entfernung;
-          naechsterBrunnen = brunnen;
-        }
+          if (entfernung < brunnenEntfernung) {
+            brunnenEntfernung = entfernung;
+            naechsterBrunnen = brunnen;
+          }
+        });
+
+        return {
+          ...park,
+          typ: "cooldown",
+          brunnen: naechsterBrunnen,
+          brunnenEntfernung: Math.round(brunnenEntfernung),
+        };
       });
 
-      return {
-        ...park,
-        typ: "cooldown",
-        brunnen: naechsterBrunnen,
-        brunnenEntfernung: Math.round(brunnenEntfernung),
-      };
-    });
+      orteRef.current = abkuehlOrte.filter(
+        (ort) => ort.brunnen && ort.brunnenEntfernung <= 250
+      );
 
-    orteRef.current = abkuehlOrte.filter(
-      (ort) => ort.brunnen && ort.brunnenEntfernung <= 250
-    );
-
-    setAnzahl(orteRef.current.length);
-    setStatus(t.coolDownLoaded);
-    aktualisiereNaechstenOrt(letzterStandortRef.current);
-  } catch (fehler) {
-    console.error(fehler);
-    setStatus(t.loadingError);
+      setAnzahl(orteRef.current.length);
+      setStatus(t.coolDownLoaded);
+      aktualisiereNaechstenOrt(letzterStandortRef.current);
+    } catch (fehler) {
+      console.error(fehler);
+      setStatus(t.loadingError);
+    }
   }
-}
 
   function aktualisiereNaechstenOrt(meinStandort) {
-  setRouteAuswahlOffen(false);
+    setRouteAuswahlOffen(false);
 
-  if (!meinStandort || orteRef.current.length === 0) return;
+    if (!meinStandort || orteRef.current.length === 0) return;
 
-  const naechster = findeNaechstenOrt(meinStandort);
+    const naechster = findeNaechstenOrt(meinStandort);
 
-  setNaechsterOrt(naechster);
-  zeigeBeideAufDerKarte(meinStandort, naechster);
+    if (!naechster) return;
 
-  setTimeout(() => {
-    markiereNaechstenOrt(naechster);
-  }, 300);
-}
+    setNaechsterOrt(naechster);
+    zeigeBeideAufDerKarte(meinStandort, naechster);
+
+    setTimeout(() => {
+      markiereNaechstenOrt(naechster);
+    }, 300);
+  }
 
   function sucheMeinenStandort() {
     setPanelOffen(false);
@@ -561,58 +629,60 @@ if (ort.typ === "cooldown") {
   }
 
   function berechneCoolScore(entfernungZumUser, brunnenEntfernung) {
-  let score = 10;
+    let score = 10;
 
-  if (entfernungZumUser > 300) score -= 1;
-  if (entfernungZumUser > 600) score -= 1;
-  if (entfernungZumUser > 1000) score -= 2;
+    if (entfernungZumUser > 300) score -= 1;
+    if (entfernungZumUser > 600) score -= 1;
+    if (entfernungZumUser > 1000) score -= 2;
 
-  if (brunnenEntfernung > 50) score -= 1;
-  if (brunnenEntfernung > 150) score -= 1;
-  if (brunnenEntfernung > 250) score -= 2;
+    if (brunnenEntfernung > 50) score -= 1;
+    if (brunnenEntfernung > 150) score -= 1;
+    if (brunnenEntfernung > 250) score -= 2;
 
-  return Math.max(1, Math.min(10, score));
-}
-
-  function findeNaechstenOrt(meinStandort) {
-  let besterOrt = null;
-  let besteBewertung = Infinity;
-
-  orteRef.current.forEach((ort) => {
-    const entfernung = mapRef.current.distance(meinStandort, [
-      ort.latitude,
-      ort.longitude,
-    ]);
-
-    let bewertung = entfernung;
-
-    if (ort.typ === "cooldown") {
-      bewertung = entfernung + ort.brunnenEntfernung * 2;
-    }
-
-    if (bewertung < besteBewertung) {
-      besteBewertung = bewertung;
-      besterOrt = {
-        ...ort,
-        entfernung: Math.round(entfernung),
-      };
-    }
-  });
-
-  const gehzeit = Math.max(1, Math.round(besterOrt.entfernung / 80));
-
-  if (besterOrt.typ === "cooldown") {
-    besterOrt.coolScore = berechneCoolScore(
-      besterOrt.entfernung,
-      besterOrt.brunnenEntfernung
-    );
+    return Math.max(1, Math.min(10, score));
   }
 
-  return {
-    ...besterOrt,
-    gehzeit,
-  };
-}
+  function findeNaechstenOrt(meinStandort) {
+    let besterOrt = null;
+    let besteBewertung = Infinity;
+
+    orteRef.current.forEach((ort) => {
+      const entfernung = mapRef.current.distance(meinStandort, [
+        ort.latitude,
+        ort.longitude,
+      ]);
+
+      let bewertung = entfernung;
+
+      if (ort.typ === "cooldown") {
+        bewertung = entfernung + ort.brunnenEntfernung * 2;
+      }
+
+      if (bewertung < besteBewertung) {
+        besteBewertung = bewertung;
+        besterOrt = {
+          ...ort,
+          entfernung: Math.round(entfernung),
+        };
+      }
+    });
+
+    if (!besterOrt) return null;
+
+    const gehzeit = Math.max(1, Math.round(besterOrt.entfernung / 80));
+
+    if (besterOrt.typ === "cooldown") {
+      besterOrt.coolScore = berechneCoolScore(
+        besterOrt.entfernung,
+        besterOrt.brunnenEntfernung
+      );
+    }
+
+    return {
+      ...besterOrt,
+      gehzeit,
+    };
+  }
 
   function zeigeBeideAufDerKarte(meinStandort, ort) {
     const map = mapRef.current;
@@ -647,25 +717,25 @@ if (ort.typ === "cooldown") {
     });
 
     markerRef.current = L.marker([ort.latitude, ort.longitude], {
-  icon: zielIcon,
-})
-  .addTo(map)
-  .bindPopup(
-    `${ortName(ort)}<br>${ort.entfernung} ${t.metersAway}<br>ca. ${
-      ort.gehzeit
-    } ${t.walking}${
-      ort.typ === "cooldown"
-        ? `<br>${t.fountainNearPark} ${ort.brunnenEntfernung} m ${t.fromPark}<br>${t.coolScore}: ${ort.coolScore}/10`
-        : ""
-    }`,
-    {
-      autoPan: true,
-      keepInView: true,
-      maxWidth: 260,
-      autoPanPadding: [40, 160],
-    }
-  )
-  .openPopup();
+      icon: zielIcon,
+    })
+      .addTo(map)
+      .bindPopup(
+        `${ortName(ort)}<br>${ort.entfernung} ${t.metersAway}<br>ca. ${
+          ort.gehzeit
+        } ${t.walking}${
+          ort.typ === "cooldown"
+            ? `<br>${t.fountainNearPark} ${ort.brunnenEntfernung} m ${t.fromPark}<br>${t.coolScore}: ${ort.coolScore}/10`
+            : ""
+        }`,
+        {
+          autoPan: true,
+          keepInView: true,
+          maxWidth: 260,
+          autoPanPadding: [40, 160],
+        }
+      )
+      .openPopup();
   }
 
   function handleTouchStart(event) {
@@ -702,6 +772,8 @@ if (ort.typ === "cooldown") {
       latitude: naechsterOrt.latitude,
       longitude: naechsterOrt.longitude,
       parkName: naechsterOrt.parkName || "",
+      brunnenEntfernung: naechsterOrt.brunnenEntfernung || null,
+      coolScore: naechsterOrt.coolScore || null,
     };
 
     const gibtEsSchon = favoriten.some(
@@ -736,13 +808,13 @@ if (ort.typ === "cooldown") {
     mapRef.current.setView([favorit.latitude, favorit.longitude], 17);
   }
 
-function ortMelden() {
-  if (!naechsterOrt) return;
+  function ortMelden() {
+    if (!naechsterOrt) return;
 
-  const betreff = encodeURIComponent(t.reportSubject);
+    const betreff = encodeURIComponent(t.reportSubject);
 
-  const text = encodeURIComponent(
-    `${t.reportIntro}
+    const text = encodeURIComponent(
+      `${t.reportIntro}
 
 ${t.reportPlaceLabel} ${ortName(naechsterOrt)}
 ${t.reportTypeLabel} ${naechsterOrt.typ}
@@ -750,12 +822,12 @@ ${t.reportCoordinatesLabel} ${naechsterOrt.latitude}, ${naechsterOrt.longitude}
 
 ${t.reportNoteLabel}
 ${t.reportNotePlaceholder}`
-  );
+    );
 
-  const url = `mailto:?subject=${betreff}&body=${text}`;
+    const url = `mailto:?subject=${betreff}&body=${text}`;
 
-  window.location.href = url;
-}
+    window.location.href = url;
+  }
 
   function routeAppleMapsOeffnen() {
     if (!naechsterOrt) return;
@@ -781,6 +853,70 @@ ${t.reportNotePlaceholder}`
 
   return (
     <div className="app">
+      <button className="help-button" onClick={() => setIntroOffen(true)}>
+  ?
+</button>
+      {introOffen && (
+        <div className="intro-overlay">
+          <div className="intro-card">
+            <button className="intro-close" onClick={introSchliessen}>
+              ✕
+            </button>
+
+            <div className="intro-icon">🥵</div>
+
+            <h2>{t.introTitle}</h2>
+
+            <div className="intro-grid">
+              <div className="intro-feature">
+                <span>💧</span>
+                <div>
+                  <strong>{t.introWaterTitle}</strong>
+                  <p>{t.introWaterText}</p>
+                </div>
+              </div>
+
+              <div className="intro-feature">
+                <span>🚻</span>
+                <div>
+                  <strong>{t.introWcTitle}</strong>
+                  <p>{t.introWcText}</p>
+                </div>
+              </div>
+
+              <div className="intro-feature">
+                <span>🌳</span>
+                <div>
+                  <strong>{t.introShadeTitle}</strong>
+                  <p>{t.introShadeText}</p>
+                </div>
+              </div>
+
+              <div className="intro-feature">
+                <span>🥵</span>
+                <div>
+                  <strong>{t.introCoolTitle}</strong>
+                  <p>{t.introCoolText}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="intro-score-box">
+              <div className="intro-score-badge">9/10</div>
+
+              <div>
+                <strong>{t.introScoreTitle}</strong>
+                <p>{t.introScoreText}</p>
+              </div>
+            </div>
+
+            <p className="intro-privacy">{t.introPrivacy}</p>
+
+            <button onClick={introSchliessen}>{t.introButton}</button>
+          </div>
+        </div>
+      )}
+
       <div
         className={panelOffen ? "box open" : "box closed"}
         onTouchStart={handleTouchStart}
@@ -794,57 +930,60 @@ ${t.reportNotePlaceholder}`
         </div>
 
         <div className="header-row">
-  <div className="title-block">
-    <h1>{t.appName}</h1>
-    <p className="claim">{t.claim}</p>
-    <p className="compact-summary">
-      {naechsterOrt
-        ? `${ortName(naechsterOrt)} · ${naechsterOrt.entfernung} ${t.metersAway}`
-        : t.compactDefault}
-    </p>
-  </div>
+          <div className="title-block">
+            <h1>{t.appName}</h1>
+            <p className="claim">{t.claim}</p>
+            <p className="compact-summary">
+              {naechsterOrt
+                ? `${ortName(naechsterOrt)} · ${naechsterOrt.entfernung} ${t.metersAway}`
+                : t.compactDefault}
+            </p>
+          </div>
 
-  <button
-  className="language-button"
-  onClick={() => {
-    const neueSprache = sprache === "de" ? "en" : "de";
-    setSprache(neueSprache);
-    localStorage.setItem("coolWienSprache", neueSprache);
-  }}
->
-  {sprache === "de" ? "EN" : "DE"}
-</button>
-</div>
+          <button className="language-button" onClick={spracheWechseln}>
+            {sprache === "de" ? "EN" : "DE"}
+          </button>
+        </div>
 
         <div className="sheet-content">
           <div className="quick-buttons">
             <button
-              className={modus === "wasser" ? "quick-button active" : "quick-button"}
+              className={
+                modus === "wasser" ? "quick-button active" : "quick-button"
+              }
               onClick={ladeWasser}
             >
               {t.water}
             </button>
 
             <button
-              className={modus === "wc" ? "quick-button active" : "quick-button"}
+              className={
+                modus === "wc" ? "quick-button active" : "quick-button"
+              }
               onClick={ladeWCs}
             >
               {t.wc}
             </button>
 
             <button
-              className={modus === "park" ? "quick-button active" : "quick-button"}
+              className={
+                modus === "park" ? "quick-button active" : "quick-button"
+              }
               onClick={ladeParks}
             >
               {t.shade}
             </button>
 
             <button
-  className={modus === "cooldown" ? "quick-button active" : "quick-button"}
-  onClick={ladeAbkuehlen}
->
-  {t.coolDown}
-</button>
+              className={
+                modus === "cooldown"
+                  ? "quick-button active"
+                  : "quick-button"
+              }
+              onClick={ladeAbkuehlen}
+            >
+              {t.coolDown}
+            </button>
           </div>
 
           <div className="small-actions">
@@ -912,33 +1051,39 @@ ${t.reportNotePlaceholder}`
               <div className="result">
                 <p className="result-label">{t.nextPlace}</p>
                 <p className="result-name">{ortName(naechsterOrt)}</p>
+
                 <p className="result-distance">
                   {naechsterOrt.entfernung} {t.metersAway} · ca.{" "}
                   {naechsterOrt.gehzeit} {t.walking}
-                  {naechsterOrt.typ === "cooldown" && (
-  <>
-    <p className="result-extra">
-      {t.fountainNearPark} {naechsterOrt.brunnenEntfernung} m{" "}
-      {t.fromPark}
-    </p>
-
-    <p className="cool-score">
-      {t.coolScore}: {naechsterOrt.coolScore}/10
-    </p>
-  </>
-)}
                 </p>
+
+                {naechsterOrt.typ === "cooldown" && (
+                  <>
+                    {naechsterOrt.brunnenEntfernung && (
+                      <p className="result-extra">
+                        {t.fountainNearPark}{" "}
+                        {naechsterOrt.brunnenEntfernung} m {t.fromPark}
+                      </p>
+                    )}
+
+                    {naechsterOrt.coolScore && (
+                      <p className="cool-score">
+                        {t.coolScore}: {naechsterOrt.coolScore}/10
+                      </p>
+                    )}
+                  </>
+                )}
               </div>
 
               <div className="result-actions">
-  <button className="secondary-button" onClick={speichereFavorit}>
-    {t.saveFavorite}
-  </button>
+                <button className="secondary-button" onClick={speichereFavorit}>
+                  {t.saveFavorite}
+                </button>
 
-  <button className="secondary-button" onClick={ortMelden}>
-    {t.reportPlace}
-  </button>
-</div>
+                <button className="secondary-button" onClick={ortMelden}>
+                  {t.reportPlace}
+                </button>
+              </div>
 
               <button onClick={() => setRouteAuswahlOffen(!routeAuswahlOffen)}>
                 {t.openRoute}
