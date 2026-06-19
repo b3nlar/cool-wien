@@ -46,6 +46,8 @@ const TEXTE = {
     locationError: "Dein Standort konnte nicht gefunden werden.",
     coolDown: "🥵 Abkühlen",
 coolDownLoaded: "Abkühlungsorte geladen",
+fountainNearPark: "Trinkbrunnen ca.",
+fromPark: "vom Park entfernt",
   },
   en: {
     appName: "Cool Vienna",
@@ -85,6 +87,8 @@ coolDownLoaded: "Abkühlungsorte geladen",
     locationError: "Your location could not be found.",
     coolDown: "🥵 Cool down",
 coolDownLoaded: "Cool-down spots loaded",
+fountainNearPark: "Water fountain approx.",
+fromPark: "from the park",
   },
 };
 
@@ -577,8 +581,14 @@ if (ort.typ === "cooldown") {
     })
       .addTo(map)
       .bindPopup(
-        `${ortName(ort)}<br>${ort.entfernung} ${t.metersAway}<br>ca. ${ort.gehzeit} ${t.walking}`
-      )
+  `${ortName(ort)}<br>${ort.entfernung} ${t.metersAway}<br>ca. ${
+    ort.gehzeit
+  } ${t.walking}${
+    ort.typ === "cooldown"
+      ? `<br>${t.fountainNearPark} ${ort.brunnenEntfernung} m ${t.fromPark}`
+      : ""
+  }`
+)
       .openPopup();
   }
 
@@ -796,6 +806,12 @@ if (ort.typ === "cooldown") {
                 <p className="result-distance">
                   {naechsterOrt.entfernung} {t.metersAway} · ca.{" "}
                   {naechsterOrt.gehzeit} {t.walking}
+                  {naechsterOrt.typ === "cooldown" && (
+  <p className="result-extra">
+    {t.fountainNearPark} {naechsterOrt.brunnenEntfernung} m{" "}
+    {t.fromPark}
+  </p>
+)}
                 </p>
               </div>
 
