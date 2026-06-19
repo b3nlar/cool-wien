@@ -1,0 +1,164 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.app {
+  height: 100vh;
+  width: 100vw;
+}
+
+#map {
+  height: 100vh;
+  width: 100vw;
+}
+
+.box {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  z-index: 1000;
+  background: white;
+  padding: 12px;
+  border-radius: 22px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+}
+
+.box h1 {
+  margin: 0;
+  font-size: 24px;
+  text-align: center;
+}
+
+.subtitle {
+  display: none;
+}
+
+.quick-buttons {
+  display: flex;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.quick-button {
+  margin-top: 0;
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 14px;
+  background: #eef5ff;
+  color: #111;
+}
+
+.quick-button.active {
+  background: #007aff;
+  color: white;
+}
+
+.mode {
+  display: none;
+}
+
+.box > p:not(.subtitle):not(.mode) {
+  display: none;
+}
+
+button {
+  margin-top: 8px;
+  width: 100%;
+  border: none;
+  border-radius: 16px;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  background: #007aff;
+  color: white;
+}
+
+.result {
+  margin-top: 8px;
+  padding: 10px;
+  border-radius: 16px;
+  background: #f0f7ff;
+  text-align: center;
+}
+
+.result-label {
+  display: none;
+}
+
+.result-name {
+  margin: 0;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.result-distance {
+  margin: 4px 0 0;
+  font-weight: bold;
+}
+
+.standort-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.standort-punkt {
+  width: 18px;
+  height: 18px;
+  background: #007aff;
+  border: 4px solid white;
+  border-radius: 50%;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+}
+
+.ziel-icon {
+  width: 44px;
+  height: 44px;
+}
+
+.ziel-pin {
+  width: 42px;
+  height: 42px;
+  background: white;
+  border: 3px solid #007aff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+
+.secondary-button {
+  background: #eef5ff;
+  color: #111;
+}
+
+.kleiner-ort-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.kleiner-ort-pin {
+  width: 26px;
+  height: 26px;
+  background: white;
+  border: 2px solid #007aff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.secondary-button {
+  background: #eef5ff;
+  color: #111;
+}
