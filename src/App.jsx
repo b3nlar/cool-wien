@@ -57,6 +57,9 @@ reportCoordinatesLabel: "Koordinaten:",
 reportNoteLabel: "Hinweis:",
 reportNotePlaceholder: "Bitte hier beschreiben, was nicht stimmt.",
 coolScore: "Cool Score",
+claim: "Wasser, Schatten & Abkühlung in deiner Nähe",
+compactDefault: "Finde kühle Orte in Wien",
+findNearest: "Nächsten Ort finden",
   },
   en: {
     appName: "Cool Vienna",
@@ -107,6 +110,9 @@ reportCoordinatesLabel: "Coordinates:",
 reportNoteLabel: "Note:",
 reportNotePlaceholder: "Please describe what is wrong here.",
 coolScore: "Cool score",
+claim: "Water, shade & cool-down spots near you",
+compactDefault: "Find cool places in Vienna",
+findNearest: "Find nearest place",
   },
 };
 
@@ -773,15 +779,23 @@ ${t.reportNotePlaceholder}`
         </div>
 
         <div className="header-row">
-          <h1>{t.appName}</h1>
+  <div className="title-block">
+    <h1>{t.appName}</h1>
+    <p className="claim">{t.claim}</p>
+    <p className="compact-summary">
+      {naechsterOrt
+        ? `${ortName(naechsterOrt)} · ${naechsterOrt.entfernung} ${t.metersAway}`
+        : t.compactDefault}
+    </p>
+  </div>
 
-          <button
-            className="language-button"
-            onClick={() => setSprache(sprache === "de" ? "en" : "de")}
-          >
-            {sprache === "de" ? "EN" : "DE"}
-          </button>
-        </div>
+  <button
+    className="language-button"
+    onClick={() => setSprache(sprache === "de" ? "en" : "de")}
+  >
+    {sprache === "de" ? "EN" : "DE"}
+  </button>
+</div>
 
         <div className="sheet-content">
           <div className="quick-buttons">
@@ -872,7 +886,7 @@ ${t.reportNotePlaceholder}`
             </div>
           )}
 
-          <button onClick={sucheMeinenStandort}>{t.searchNearby}</button>
+          <button onClick={sucheMeinenStandort}>{t.findNearest}</button>
 
           {naechsterOrt && (
             <>

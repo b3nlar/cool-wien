@@ -618,3 +618,44 @@ button:active {
   font-size: 13px;
   font-weight: 800;
 }
+
+.title-block {
+  text-align: center;
+  min-width: 0;
+}
+
+.claim {
+  margin: 2px 52px 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.25;
+}
+
+.compact-summary {
+  display: none;
+  margin: 4px 52px 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.box.closed .claim {
+  display: none;
+}
+
+.box.closed .compact-summary {
+  display: block;
+}
+
+.box.closed .header-row {
+  margin-top: 0;
+}
+
+.box.closed h1 {
+  font-size: 22px;
+}
