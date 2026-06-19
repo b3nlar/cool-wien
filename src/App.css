@@ -162,3 +162,28 @@ button {
   background: #eef5ff;
   color: #111;
 }
+
+.box {
+  transition: all 0.25s ease;
+}
+
+.box.closed {
+  padding: 10px 14px;
+}
+
+.box.closed h1 {
+  font-size: 22px;
+  margin-bottom: 6px;
+}
+
+.box.open {
+  padding: 12px;
+}
+
+.panel-toggle {
+  margin-top: 6px;
+  background: #eef5ff;
+  color: #111;
+  padding: 10px;
+  font-size: 14px;
+}

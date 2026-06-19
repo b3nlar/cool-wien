@@ -20,6 +20,7 @@ export default function App() {
   const [modus, setModus] = useState("Wasser 💧");
   const [naechsterOrt, setNaechsterOrt] = useState(null);
   const [alleSichtbar, setAlleSichtbar] = useState(false);
+  const [panelOffen, setPanelOffen] = useState(false);
 
   useEffect(() => {
     const map = L.map("map", {
@@ -359,61 +360,72 @@ export default function App() {
   }
 
   return (
-    <div className="app">
-      <div className="box">
-        <h1>Cool Wien</h1>
+  <div className="app">
+    <div className={panelOffen ? "box open" : "box closed"}>
+      <h1>Cool Wien</h1>
 
-        <div className="quick-buttons">
-          <button
-            className={
-              modus === "Wasser 💧" ? "quick-button active" : "quick-button"
-            }
-            onClick={ladeWasser}
-          >
-            💧 Wasser
+      <button
+        className="panel-toggle"
+        onClick={() => setPanelOffen(!panelOffen)}
+      >
+        {panelOffen ? "Nach unten klappen" : "Nach oben klappen"}
+      </button>
+
+      {panelOffen && (
+        <>
+          <div className="quick-buttons">
+            <button
+              className={
+                modus === "Wasser 💧" ? "quick-button active" : "quick-button"
+              }
+              onClick={ladeWasser}
+            >
+              💧 Wasser
+            </button>
+
+            <button
+              className={
+                modus === "WC 🚻" ? "quick-button active" : "quick-button"
+              }
+              onClick={ladeWCs}
+            >
+              🚻 WC
+            </button>
+
+            <button
+              className={
+                modus === "Schatten 🌳" ? "quick-button active" : "quick-button"
+              }
+              onClick={ladeParks}
+            >
+              🌳 Schatten
+            </button>
+          </div>
+
+          <button className="secondary-button" onClick={zeigeAlleOrte}>
+            {alleSichtbar ? "Alle ausblenden" : "Alle anzeigen"}
           </button>
 
-          <button
-            className={
-              modus === "WC 🚻" ? "quick-button active" : "quick-button"
-            }
-            onClick={ladeWCs}
-          >
-            🚻 WC
-          </button>
+          <button onClick={sucheMeinenStandort}>In meiner Nähe suchen</button>
 
-          <button
-            className={
-              modus === "Schatten 🌳" ? "quick-button active" : "quick-button"
-            }
-            onClick={ladeParks}
-          >
-            🌳 Schatten
-          </button>
-        </div>
+          {naechsterOrt && (
+            <>
+              <div className="result">
+                <p className="result-label">Nächster Ort:</p>
+                <p className="result-name">{naechsterOrt.name}</p>
+                <p className="result-distance">
+                  {naechsterOrt.entfernung} m entfernt
+                </p>
+              </div>
 
-        <button className="secondary-button" onClick={zeigeAlleOrte}>
-          {alleSichtbar ? "Alle ausblenden" : "Alle anzeigen"}
-        </button>
-
-        <button onClick={sucheMeinenStandort}>In meiner Nähe suchen</button>
-
-        {naechsterOrt && (
-          <>
-            <div className="result">
-              <p className="result-label">Nächster Ort:</p>
-              <p className="result-name">{naechsterOrt.name}</p>
-              <p className="result-distance">
-                {naechsterOrt.entfernung} m entfernt
-              </p>
-            </div>
-
-            <button onClick={routeOeffnen}>Route öffnen</button>
-          </>
-        )}
-      </div>
-
-      <div id="map"></div>
+              <button onClick={routeOeffnen}>Route öffnen</button>
+            </>
+          )}
+        </>
+      )}
     </div>
-  );
+
+    <div id="map"></div>
+  </div>
+);
 }
