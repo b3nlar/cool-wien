@@ -7,6 +7,83 @@ const TRINKBRUNNEN_URL = "/trinkbrunnen.json";
 const WC_URL = "/wcs.json";
 const PARK_URL = "/parks.json";
 
+const TEXTE = {
+  de: {
+    appName: "Cool Wien",
+    water: "💧 Wasser",
+    wc: "🚻 WC",
+    shade: "🌳 Schatten",
+    showAll: "Alle anzeigen",
+    hideAll: "Alle ausblenden",
+    favorites: "⭐ Favoriten",
+    info: "ℹ️ Info",
+    searchNearby: "In meiner Nähe suchen",
+    nextPlace: "Nächster Ort:",
+    saveFavorite: "⭐ Favorit speichern",
+    openRoute: "Route öffnen",
+    appleMaps: "Apple Maps",
+    googleMaps: "Google Maps",
+    noFavorites: "Noch keine Favoriten gespeichert.",
+    privacyTitle: "Datenschutz:",
+    privacyText:
+      "Cool Wien speichert deinen Standort nicht. Die Suche nach Orten in deiner Nähe passiert nur auf deinem Gerät.",
+    sourcesTitle: "Datenquellen:",
+    sourcesText: "Stadt Wien – data.wien.gv.at, OpenStreetMap und CARTO.",
+    metersAway: "m entfernt",
+    walking: "Min. zu Fuß",
+    waterFountainName: "Trinkbrunnen 💧",
+    publicToiletName: "Öffentliche WC-Anlage 🚻",
+    parkName: "Park 🌳",
+    youAreHere: "Du bist ungefähr hier",
+    loadingData: "Lade Daten ...",
+    loadingWater: "Lade Trinkbrunnen ...",
+    loadingWc: "Lade WCs ...",
+    loadingParks: "Lade Parks ...",
+    waterLoaded: "Trinkbrunnen geladen",
+    wcLoaded: "WCs geladen",
+    parksLoaded: "Parks geladen",
+    loadingError: "Fehler beim Laden",
+    locationError: "Dein Standort konnte nicht gefunden werden.",
+  },
+  en: {
+    appName: "Cool Vienna",
+    water: "💧 Water",
+    wc: "🚻 WC",
+    shade: "🌳 Shade",
+    showAll: "Show all",
+    hideAll: "Hide all",
+    favorites: "⭐ Favorites",
+    info: "ℹ️ Info",
+    searchNearby: "Search nearby",
+    nextPlace: "Nearest place:",
+    saveFavorite: "⭐ Save favorite",
+    openRoute: "Open route",
+    appleMaps: "Apple Maps",
+    googleMaps: "Google Maps",
+    noFavorites: "No favorites saved yet.",
+    privacyTitle: "Privacy:",
+    privacyText:
+      "Cool Vienna does not store your location. Nearby search happens only on your device.",
+    sourcesTitle: "Data sources:",
+    sourcesText: "City of Vienna – data.wien.gv.at, OpenStreetMap and CARTO.",
+    metersAway: "m away",
+    walking: "min. walk",
+    waterFountainName: "Water fountain 💧",
+    publicToiletName: "Public toilet 🚻",
+    parkName: "Park 🌳",
+    youAreHere: "You are approximately here",
+    loadingData: "Loading data ...",
+    loadingWater: "Loading water fountains ...",
+    loadingWc: "Loading public toilets ...",
+    loadingParks: "Loading parks ...",
+    waterLoaded: "Water fountains loaded",
+    wcLoaded: "Public toilets loaded",
+    parksLoaded: "Parks loaded",
+    loadingError: "Error while loading",
+    locationError: "Your location could not be found.",
+  },
+};
+
 export default function App() {
   const mapRef = useRef(null);
   const orteRef = useRef([]);
@@ -17,41 +94,44 @@ export default function App() {
   const touchStartYRef = useRef(null);
 
   const [anzahl, setAnzahl] = useState(0);
-  const [status, setStatus] = useState("Lade Daten ...");
-  const [modus, setModus] = useState("Wasser 💧");
+  const [status, setStatus] = useState(TEXTE.de.loadingData);
+  const [modus, setModus] = useState("wasser");
   const [naechsterOrt, setNaechsterOrt] = useState(null);
   const [alleSichtbar, setAlleSichtbar] = useState(false);
   const [panelOffen, setPanelOffen] = useState(false);
   const [infoOffen, setInfoOffen] = useState(false);
   const [routeAuswahlOffen, setRouteAuswahlOffen] = useState(false);
   const [favoriten, setFavoriten] = useState([]);
-const [favoritenOffen, setFavoritenOffen] = useState(false);
+  const [favoritenOffen, setFavoritenOffen] = useState(false);
+  const [sprache, setSprache] = useState("de");
+
+  const t = TEXTE[sprache];
 
   useEffect(() => {
     const map = L.map("map", {
-  zoomControl: false,
-  attributionControl: false,
-}).setView([48.2082, 16.3738], 12);
+      zoomControl: false,
+      attributionControl: false,
+    }).setView([48.2082, 16.3738], 12);
 
     mapRef.current = map;
 
     L.tileLayer(
-  "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
-  {
-    subdomains: "abcd",
-    maxZoom: 20,
-  }
-).addTo(map);
+      "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+      {
+        subdomains: "abcd",
+        maxZoom: 20,
+      }
+    ).addTo(map);
 
-L.control
-  .attribution({
-    position: "topright",
-    prefix: "Leaflet",
-  })
-  .addAttribution(
-    "© OpenStreetMap © CARTO | Datenquelle: Stadt Wien - data.wien.gv.at"
-  )
-  .addTo(map);
+    L.control
+      .attribution({
+        position: "topright",
+        prefix: "Leaflet",
+      })
+      .addAttribution(
+        "© OpenStreetMap © CARTO | Datenquelle: Stadt Wien - data.wien.gv.at"
+      )
+      .addTo(map);
 
     ladeWasser();
 
@@ -61,12 +141,56 @@ L.control
   }, []);
 
   useEffect(() => {
-  const gespeicherteFavoriten = localStorage.getItem("coolWienFavoriten");
+    const gespeicherteFavoriten = localStorage.getItem("coolWienFavoriten");
 
-  if (gespeicherteFavoriten) {
-    setFavoriten(JSON.parse(gespeicherteFavoriten));
+    if (gespeicherteFavoriten) {
+      setFavoriten(JSON.parse(gespeicherteFavoriten));
+    }
+  }, []);
+
+  useEffect(() => {
+    setStatus(t.loadingData);
+
+    if (standortMarkerRef.current) {
+      standortMarkerRef.current.bindPopup(t.youAreHere);
+    }
+
+    if (naechsterOrt) {
+      markiereNaechstenOrt(naechsterOrt);
+    }
+  }, [sprache]);
+
+  function ortName(ort) {
+    if (!ort) return "";
+
+    if (ort.typ === "wasser") {
+      return t.waterFountainName;
+    }
+
+    if (ort.typ === "wc") {
+      return t.publicToiletName;
+    }
+
+    if (ort.typ === "park") {
+      if (ort.parkName) {
+        return `${ort.parkName} 🌳`;
+      }
+
+      return t.parkName;
+    }
+
+    return ort.name || "";
   }
-}, []);
+
+  function ortIcon(ort) {
+    if (!ort) return "📍";
+
+    if (ort.typ === "wasser") return "💧";
+    if (ort.typ === "wc") return "🚻";
+    if (ort.typ === "park") return "🌳";
+
+    return "📍";
+  }
 
   function entferneAlleMarker() {
     alleMarkerRef.current.forEach((marker) => marker.remove());
@@ -86,23 +210,9 @@ L.control
     entferneAlleMarker();
 
     orteRef.current.forEach((ort) => {
-      let iconText = "📍";
-
-      if (ort.typ === "wasser") {
-        iconText = "💧";
-      }
-
-      if (ort.typ === "wc") {
-        iconText = "🚻";
-      }
-
-      if (ort.typ === "park") {
-        iconText = "🌳";
-      }
-
       const kleinerIcon = L.divIcon({
         className: "kleiner-ort-icon",
-        html: `<div class="kleiner-ort-pin">${iconText}</div>`,
+        html: `<div class="kleiner-ort-pin">${ortIcon(ort)}</div>`,
         iconSize: [28, 28],
         iconAnchor: [14, 14],
         popupAnchor: [0, -14],
@@ -112,7 +222,7 @@ L.control
         icon: kleinerIcon,
       })
         .addTo(map)
-        .bindPopup(ort.name);
+        .bindPopup(ortName(ort));
 
       alleMarkerRef.current.push(marker);
     });
@@ -132,8 +242,9 @@ L.control
   }
 
   async function ladeWasser() {
-    setModus("Wasser 💧");
-    setStatus("Lade Trinkbrunnen ...");
+    setModus("wasser");
+    setStatus(t.loadingWater);
+    setRouteAuswahlOffen(false);
     entferneZielMarker();
 
     try {
@@ -154,23 +265,22 @@ L.control
           latitude,
           longitude,
           typ: "wasser",
-          name: "Trinkbrunnen 💧",
         });
       });
 
       setAnzahl(orteRef.current.length);
-      setStatus("Trinkbrunnen geladen");
+      setStatus(t.waterLoaded);
       aktualisiereNaechstenOrt(letzterStandortRef.current);
-      setRouteAuswahlOffen(false);
     } catch (fehler) {
       console.error(fehler);
-      setStatus("Fehler beim Laden");
+      setStatus(t.loadingError);
     }
   }
 
   async function ladeWCs() {
-    setModus("WC 🚻");
-    setStatus("Lade WCs ...");
+    setModus("wc");
+    setStatus(t.loadingWc);
+    setRouteAuswahlOffen(false);
     entferneZielMarker();
 
     try {
@@ -191,22 +301,22 @@ L.control
           latitude,
           longitude,
           typ: "wc",
-          name: "Öffentliche WC-Anlage 🚻",
         });
       });
 
       setAnzahl(orteRef.current.length);
-      setStatus("WCs geladen");
+      setStatus(t.wcLoaded);
       aktualisiereNaechstenOrt(letzterStandortRef.current);
     } catch (fehler) {
       console.error(fehler);
-      setStatus("Fehler beim Laden");
+      setStatus(t.loadingError);
     }
   }
 
   async function ladeParks() {
-    setModus("Schatten 🌳");
-    setStatus("Lade Parks ...");
+    setModus("park");
+    setStatus(t.loadingParks);
+    setRouteAuswahlOffen(false);
     entferneZielMarker();
 
     try {
@@ -227,26 +337,28 @@ L.control
           ort.properties?.ANL_NAME ||
           ort.properties?.PARKANLAGE ||
           ort.properties?.NAME ||
-          "Park";
+          "";
 
         orteRef.current.push({
           latitude,
           longitude,
           typ: "park",
-          name: `${parkName} 🌳`,
+          parkName,
         });
       });
 
       setAnzahl(orteRef.current.length);
-      setStatus("Parks geladen");
+      setStatus(t.parksLoaded);
       aktualisiereNaechstenOrt(letzterStandortRef.current);
     } catch (fehler) {
       console.error(fehler);
-      setStatus("Fehler beim Laden");
+      setStatus(t.loadingError);
     }
   }
 
   function aktualisiereNaechstenOrt(meinStandort) {
+    setRouteAuswahlOffen(false);
+
     if (!meinStandort || orteRef.current.length === 0) return;
 
     const naechster = findeNaechstenOrt(meinStandort);
@@ -258,6 +370,7 @@ L.control
 
   function sucheMeinenStandort() {
     setPanelOffen(false);
+
     const map = mapRef.current;
     if (!map) return;
 
@@ -286,14 +399,14 @@ L.control
         icon: standortIcon,
       })
         .addTo(map)
-        .bindPopup("Du bist ungefähr hier")
+        .bindPopup(t.youAreHere)
         .openPopup();
 
       aktualisiereNaechstenOrt(meinStandort);
     });
 
     map.once("locationerror", () => {
-      alert("Dein Standort konnte nicht gefunden werden.");
+      alert(t.locationError);
     });
   }
 
@@ -314,13 +427,13 @@ L.control
     });
 
     const entfernungGerundet = Math.round(kleinsteEntfernung);
-const gehzeit = Math.max(1, Math.round(entfernungGerundet / 80));
+    const gehzeit = Math.max(1, Math.round(entfernungGerundet / 80));
 
-return {
-  ...besterOrt,
-  entfernung: entfernungGerundet,
-  gehzeit,
-};
+    return {
+      ...besterOrt,
+      entfernung: entfernungGerundet,
+      gehzeit,
+    };
   }
 
   function zeigeBeideAufDerKarte(meinStandort, ort) {
@@ -333,10 +446,10 @@ return {
     ]);
 
     map.fitBounds(bereich, {
-  paddingTopLeft: [60, 80],
-  paddingBottomRight: [60, 220],
-  maxZoom: 17,
-});
+      paddingTopLeft: [60, 80],
+      paddingBottomRight: [60, 220],
+      maxZoom: 17,
+    });
   }
 
   function markiereNaechstenOrt(ort) {
@@ -347,23 +460,9 @@ return {
       markerRef.current.remove();
     }
 
-    let iconText = "📍";
-
-    if (ort.typ === "wasser") {
-      iconText = "💧";
-    }
-
-    if (ort.typ === "wc") {
-      iconText = "🚻";
-    }
-
-    if (ort.typ === "park") {
-      iconText = "🌳";
-    }
-
     const zielIcon = L.divIcon({
       className: "ziel-icon",
-      html: `<div class="ziel-pin">${iconText}</div>`,
+      html: `<div class="ziel-pin">${ortIcon(ort)}</div>`,
       iconSize: [44, 44],
       iconAnchor: [22, 22],
       popupAnchor: [0, -22],
@@ -374,238 +473,243 @@ return {
     })
       .addTo(map)
       .bindPopup(
-  `${ort.name}<br>${ort.entfernung} m entfernt<br>ca. ${ort.gehzeit} Min. zu Fuß`
-)
+        `${ortName(ort)}<br>${ort.entfernung} ${t.metersAway}<br>ca. ${ort.gehzeit} ${t.walking}`
+      )
       .openPopup();
   }
 
-function handleTouchStart(event) {
-  event.stopPropagation();
-  touchStartYRef.current = event.touches[0].clientY;
-}
-
-function handleTouchEnd(event) {
-  event.stopPropagation();
-  if (touchStartYRef.current === null) return;
-
-  const startY = touchStartYRef.current;
-  const endY = event.changedTouches[0].clientY;
-  const unterschied = startY - endY;
-
-  if (unterschied > 40) {
-    setPanelOffen(true);
+  function handleTouchStart(event) {
+    event.stopPropagation();
+    touchStartYRef.current = event.touches[0].clientY;
   }
 
-  if (unterschied < -40) {
-    setPanelOffen(false);
+  function handleTouchEnd(event) {
+    event.stopPropagation();
+
+    if (touchStartYRef.current === null) return;
+
+    const startY = touchStartYRef.current;
+    const endY = event.changedTouches[0].clientY;
+    const unterschied = startY - endY;
+
+    if (unterschied > 40) {
+      setPanelOffen(true);
+    }
+
+    if (unterschied < -40) {
+      setPanelOffen(false);
+    }
+
+    touchStartYRef.current = null;
   }
 
-  touchStartYRef.current = null;
-}
+  function speichereFavorit() {
+    if (!naechsterOrt) return;
 
-function speichereFavorit() {
-  if (!naechsterOrt) return;
+    const neuerFavorit = {
+      id: `${naechsterOrt.typ}-${naechsterOrt.latitude}-${naechsterOrt.longitude}`,
+      typ: naechsterOrt.typ,
+      latitude: naechsterOrt.latitude,
+      longitude: naechsterOrt.longitude,
+      parkName: naechsterOrt.parkName || "",
+    };
 
-  const neuerFavorit = {
-    id: `${naechsterOrt.typ}-${naechsterOrt.latitude}-${naechsterOrt.longitude}`,
-    name: naechsterOrt.name,
-    typ: naechsterOrt.typ,
-    latitude: naechsterOrt.latitude,
-    longitude: naechsterOrt.longitude,
-  };
+    const gibtEsSchon = favoriten.some(
+      (favorit) => favorit.id === neuerFavorit.id
+    );
 
-  const gibtEsSchon = favoriten.some(
-    (favorit) => favorit.id === neuerFavorit.id
-  );
+    if (gibtEsSchon) return;
 
-  if (gibtEsSchon) return;
+    const neueFavoriten = [...favoriten, neuerFavorit];
 
-  const neueFavoriten = [...favoriten, neuerFavorit];
+    setFavoriten(neueFavoriten);
+    localStorage.setItem("coolWienFavoriten", JSON.stringify(neueFavoriten));
+  }
 
-  setFavoriten(neueFavoriten);
-  localStorage.setItem("coolWienFavoriten", JSON.stringify(neueFavoriten));
-}
+  function entferneFavorit(id) {
+    const neueFavoriten = favoriten.filter((favorit) => favorit.id !== id);
 
-function entferneFavorit(id) {
-  const neueFavoriten = favoriten.filter((favorit) => favorit.id !== id);
+    setFavoriten(neueFavoriten);
+    localStorage.setItem("coolWienFavoriten", JSON.stringify(neueFavoriten));
+  }
 
-  setFavoriten(neueFavoriten);
-  localStorage.setItem("coolWienFavoriten", JSON.stringify(neueFavoriten));
-}
+  function zeigeFavoritAufKarte(favorit) {
+    const favoritOrt = {
+      ...favorit,
+      entfernung: 0,
+      gehzeit: 0,
+    };
 
-function zeigeFavoritAufKarte(favorit) {
-  const favoritOrt = {
-    ...favorit,
-    entfernung: 0,
-    gehzeit: 0,
-  };
+    setNaechsterOrt(favoritOrt);
+    markiereNaechstenOrt(favoritOrt);
 
-  setNaechsterOrt(favoritOrt);
-  markiereNaechstenOrt(favoritOrt);
-
-  mapRef.current.setView([favorit.latitude, favorit.longitude], 17);
-}
+    mapRef.current.setView([favorit.latitude, favorit.longitude], 17);
+  }
 
   function routeAppleMapsOeffnen() {
-  if (!naechsterOrt) return;
+    if (!naechsterOrt) return;
 
-  const latitude = naechsterOrt.latitude;
-  const longitude = naechsterOrt.longitude;
+    const latitude = naechsterOrt.latitude;
+    const longitude = naechsterOrt.longitude;
 
-  const url = `https://maps.apple.com/?daddr=${latitude},${longitude}&dirflg=w`;
+    const url = `https://maps.apple.com/?daddr=${latitude},${longitude}&dirflg=w`;
 
-  window.open(url, "_blank");
-}
+    window.open(url, "_blank");
+  }
 
-function routeGoogleMapsOeffnen() {
-  if (!naechsterOrt) return;
+  function routeGoogleMapsOeffnen() {
+    if (!naechsterOrt) return;
 
-  const latitude = naechsterOrt.latitude;
-  const longitude = naechsterOrt.longitude;
+    const latitude = naechsterOrt.latitude;
+    const longitude = naechsterOrt.longitude;
 
-  const url = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}&travelmode=walking`;
+    const url = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}&travelmode=walking`;
 
-  window.open(url, "_blank");
-}
+    window.open(url, "_blank");
+  }
 
   return (
-  <div className="app">
-    <div
-      className={panelOffen ? "box open" : "box closed"}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-    >
+    <div className="app">
       <div
-        className="sheet-handle-area"
-        onClick={() => setPanelOffen(!panelOffen)}
+        className={panelOffen ? "box open" : "box closed"}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
       >
-        <div className="sheet-handle"></div>
-      </div>
+        <div
+          className="sheet-handle-area"
+          onClick={() => setPanelOffen(!panelOffen)}
+        >
+          <div className="sheet-handle"></div>
+        </div>
 
-      <h1>Cool Wien</h1>
-
-      <div className="sheet-content">
-        <div className="quick-buttons">
-          <button
-            className={
-              modus === "Wasser 💧" ? "quick-button active" : "quick-button"
-            }
-            onClick={ladeWasser}
-          >
-            💧 Wasser
-          </button>
+        <div className="header-row">
+          <h1>{t.appName}</h1>
 
           <button
-            className={
-              modus === "WC 🚻" ? "quick-button active" : "quick-button"
-            }
-            onClick={ladeWCs}
+            className="language-button"
+            onClick={() => setSprache(sprache === "de" ? "en" : "de")}
           >
-            🚻 WC
-          </button>
-
-          <button
-            className={
-              modus === "Schatten 🌳" ? "quick-button active" : "quick-button"
-            }
-            onClick={ladeParks}
-          >
-            🌳 Schatten
+            {sprache === "de" ? "EN" : "DE"}
           </button>
         </div>
 
-        <div className="small-actions">
-  <button className="secondary-button" onClick={zeigeAlleOrte}>
-    {alleSichtbar ? "Alle ausblenden" : "Alle anzeigen"}
-  </button>
+        <div className="sheet-content">
+          <div className="quick-buttons">
+            <button
+              className={modus === "wasser" ? "quick-button active" : "quick-button"}
+              onClick={ladeWasser}
+            >
+              {t.water}
+            </button>
 
-  <button
-    className="secondary-button"
-    onClick={() => setFavoritenOffen(!favoritenOffen)}
-  >
-    ⭐ Favoriten
-  </button>
+            <button
+              className={modus === "wc" ? "quick-button active" : "quick-button"}
+              onClick={ladeWCs}
+            >
+              {t.wc}
+            </button>
 
-  <button
-    className="secondary-button"
-    onClick={() => setInfoOffen(!infoOffen)}
-  >
-    ℹ️ Info
-  </button>
-</div>
+            <button
+              className={modus === "park" ? "quick-button active" : "quick-button"}
+              onClick={ladeParks}
+            >
+              {t.shade}
+            </button>
+          </div>
 
-{favoritenOffen && (
-  <div className="favoriten-box">
-    {favoriten.length === 0 && (
-      <p className="empty-text">Noch keine Favoriten gespeichert.</p>
-    )}
+          <div className="small-actions">
+            <button className="secondary-button" onClick={zeigeAlleOrte}>
+              {alleSichtbar ? t.hideAll : t.showAll}
+            </button>
 
-    {favoriten.map((favorit) => (
-      <div className="favorit-item" key={favorit.id}>
-        <button
-          className="favorit-name"
-          onClick={() => zeigeFavoritAufKarte(favorit)}
-        >
-          {favorit.name}
-        </button>
+            <button
+              className="secondary-button"
+              onClick={() => setFavoritenOffen(!favoritenOffen)}
+            >
+              {t.favorites}
+            </button>
 
-        <button
-          className="favorit-delete"
-          onClick={() => entferneFavorit(favorit.id)}
-        >
-          ✕
-        </button>
-      </div>
-    ))}
-  </div>
-)}
+            <button
+              className="secondary-button"
+              onClick={() => setInfoOffen(!infoOffen)}
+            >
+              {t.info}
+            </button>
+          </div>
 
-{infoOffen && (
-  <div className="info-box">
-    <p>
-      <strong>Datenschutz:</strong> Cool Wien speichert deinen Standort nicht.
-      Die Suche nach Orten in deiner Nähe passiert nur auf deinem Gerät.
-    </p>
+          {favoritenOffen && (
+            <div className="favoriten-box">
+              {favoriten.length === 0 && (
+                <p className="empty-text">{t.noFavorites}</p>
+              )}
 
-    <p>
-      <strong>Datenquellen:</strong> Stadt Wien – data.wien.gv.at,
-      OpenStreetMap und CARTO.
-    </p>
-  </div>
-)}
+              {favoriten.map((favorit) => (
+                <div className="favorit-item" key={favorit.id}>
+                  <button
+                    className="favorit-name"
+                    onClick={() => zeigeFavoritAufKarte(favorit)}
+                  >
+                    {ortName(favorit)}
+                  </button>
 
-<button onClick={sucheMeinenStandort}>In meiner Nähe suchen</button>
-
-        {naechsterOrt && (
-          <>
-            <div className="result">
-              <p className="result-label">Nächster Ort:</p>
-              <p className="result-name">{naechsterOrt.name}</p>
-              <p className="result-distance">
-  {naechsterOrt.entfernung} m entfernt · ca. {naechsterOrt.gehzeit} Min. zu Fuß
-</p>
+                  <button
+                    className="favorit-delete"
+                    onClick={() => entferneFavorit(favorit.id)}
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
             </div>
+          )}
 
-            <button className="secondary-button" onClick={speichereFavorit}>
-  ⭐ Favorit speichern
-</button>
+          {infoOffen && (
+            <div className="info-box">
+              <p>
+                <strong>{t.privacyTitle}</strong> {t.privacyText}
+              </p>
 
-            <button onClick={() => setRouteAuswahlOffen(!routeAuswahlOffen)}>
-  Route öffnen
-</button>
+              <p>
+                <strong>{t.sourcesTitle}</strong> {t.sourcesText}
+              </p>
+            </div>
+          )}
 
-{routeAuswahlOffen && (
-  <div className="route-buttons">
-    <button onClick={routeAppleMapsOeffnen}>Apple Maps</button>
-    <button onClick={routeGoogleMapsOeffnen}>Google Maps</button>
-  </div>
-)}
-          </>
-        )}
+          <button onClick={sucheMeinenStandort}>{t.searchNearby}</button>
+
+          {naechsterOrt && (
+            <>
+              <div className="result">
+                <p className="result-label">{t.nextPlace}</p>
+                <p className="result-name">{ortName(naechsterOrt)}</p>
+                <p className="result-distance">
+                  {naechsterOrt.entfernung} {t.metersAway} · ca.{" "}
+                  {naechsterOrt.gehzeit} {t.walking}
+                </p>
+              </div>
+
+              <button className="secondary-button" onClick={speichereFavorit}>
+                {t.saveFavorite}
+              </button>
+
+              <button onClick={() => setRouteAuswahlOffen(!routeAuswahlOffen)}>
+                {t.openRoute}
+              </button>
+
+              {routeAuswahlOffen && (
+                <div className="route-buttons">
+                  <button onClick={routeAppleMapsOeffnen}>{t.appleMaps}</button>
+                  <button onClick={routeGoogleMapsOeffnen}>
+                    {t.googleMaps}
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+        </div>
       </div>
-    </div>
 
-    <div id="map"></div>
-  </div>
-);
+      <div id="map"></div>
+    </div>
+  );
 }

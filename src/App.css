@@ -561,3 +561,30 @@ button:active {
   color: #991b1b;
   box-shadow: none;
 }
+
+.header-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.header-row h1 {
+  text-align: center;
+  margin-left: 48px;
+  margin-right: 48px;
+}
+
+.language-button {
+  position: absolute;
+  right: 0;
+  width: auto;
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  background: #f3f4f6;
+  color: #111827;
+  box-shadow: none;
+}
