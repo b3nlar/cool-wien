@@ -220,3 +220,43 @@ button {
   max-height: 58vh;
   overflow-y: auto;
 }
+
+.box {
+  transition:
+    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    max-height 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    padding 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    border-radius 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform, max-height;
+}
+
+.box.closed {
+  transform: translateY(0);
+  max-height: 92px;
+  overflow: hidden;
+}
+
+.box.open {
+  transform: translateY(0);
+  max-height: 58vh;
+  overflow-y: auto;
+}
+
+.sheet-handle {
+  transition:
+    width 0.25s ease,
+    background 0.25s ease;
+}
+
+.box.open .sheet-handle {
+  width: 58px;
+  background: #b0b0b8;
+}
+
+.box.closed .sheet-handle {
+  width: 44px;
+}
+
+.box {
+  -webkit-overflow-scrolling: touch;
+}
