@@ -44,6 +44,8 @@ const TEXTE = {
     parksLoaded: "Parks geladen",
     loadingError: "Fehler beim Laden",
     locationError: "Dein Standort konnte nicht gefunden werden.",
+    coolDown: "🥵 Abkühlen",
+coolDownLoaded: "Abkühlungsorte geladen",
   },
   en: {
     appName: "Cool Vienna",
@@ -81,12 +83,16 @@ const TEXTE = {
     parksLoaded: "Parks loaded",
     loadingError: "Error while loading",
     locationError: "Your location could not be found.",
+    coolDown: "🥵 Cool down",
+coolDownLoaded: "Cool-down spots loaded",
   },
 };
 
 export default function App() {
   const mapRef = useRef(null);
   const orteRef = useRef([]);
+  const wasserOrteRef = useRef([]);
+const parkOrteRef = useRef([]);
   const markerRef = useRef(null);
   const standortMarkerRef = useRef(null);
   const letzterStandortRef = useRef(null);
@@ -178,7 +184,13 @@ export default function App() {
 
       return t.parkName;
     }
+if (ort.typ === "cooldown") {
+  if (ort.parkName) {
+    return `${ort.parkName} 🌳 + 💧`;
+  }
 
+  return `${t.parkName} + 💧`;
+}
     return ort.name || "";
   }
 
@@ -188,6 +200,7 @@ export default function App() {
     if (ort.typ === "wasser") return "💧";
     if (ort.typ === "wc") return "🚻";
     if (ort.typ === "park") return "🌳";
+    if (ort.typ === "cooldown") return "🥵";
 
     return "📍";
   }
@@ -267,6 +280,7 @@ export default function App() {
           typ: "wasser",
         });
       });
+      wasserOrteRef.current = orteRef.current;
 
       setAnzahl(orteRef.current.length);
       setStatus(t.waterLoaded);
@@ -346,6 +360,7 @@ export default function App() {
           parkName,
         });
       });
+      parkOrteRef.current = orteRef.current;
 
       setAnzahl(orteRef.current.length);
       setStatus(t.parksLoaded);
@@ -355,6 +370,95 @@ export default function App() {
       setStatus(t.loadingError);
     }
   }
+
+  async function ladeAbkuehlen() {
+  setModus("cooldown");
+  setStatus(t.loadingParks);
+  setRouteAuswahlOffen(false);
+  entferneZielMarker();
+
+  try {
+    if (wasserOrteRef.current.length === 0) {
+      const wasserAntwort = await fetch(TRINKBRUNNEN_URL);
+      const wasserDaten = await wasserAntwort.json();
+      const wasserFeatures = wasserDaten.features || [];
+
+      wasserOrteRef.current = wasserFeatures
+        .map((ort) => {
+          const koordinaten = ort.geometry?.coordinates;
+          if (!koordinaten) return null;
+
+          return {
+            latitude: koordinaten[1],
+            longitude: koordinaten[0],
+            typ: "wasser",
+          };
+        })
+        .filter(Boolean);
+    }
+
+    if (parkOrteRef.current.length === 0) {
+      const parkAntwort = await fetch(PARK_URL);
+      const parkDaten = await parkAntwort.json();
+      const parkFeatures = parkDaten.features || [];
+
+      parkOrteRef.current = parkFeatures
+        .map((ort) => {
+          const koordinaten = ort.geometry?.coordinates;
+          if (!koordinaten) return null;
+
+          const parkName =
+            ort.properties?.ANL_NAME ||
+            ort.properties?.PARKANLAGE ||
+            ort.properties?.NAME ||
+            "";
+
+          return {
+            latitude: koordinaten[1],
+            longitude: koordinaten[0],
+            typ: "park",
+            parkName,
+          };
+        })
+        .filter(Boolean);
+    }
+
+    const abkuehlOrte = parkOrteRef.current.map((park) => {
+      let naechsterBrunnen = null;
+      let brunnenEntfernung = Infinity;
+
+      wasserOrteRef.current.forEach((brunnen) => {
+        const entfernung = mapRef.current.distance(
+          [park.latitude, park.longitude],
+          [brunnen.latitude, brunnen.longitude]
+        );
+
+        if (entfernung < brunnenEntfernung) {
+          brunnenEntfernung = entfernung;
+          naechsterBrunnen = brunnen;
+        }
+      });
+
+      return {
+        ...park,
+        typ: "cooldown",
+        brunnen: naechsterBrunnen,
+        brunnenEntfernung: Math.round(brunnenEntfernung),
+      };
+    });
+
+    orteRef.current = abkuehlOrte.filter(
+      (ort) => ort.brunnen && ort.brunnenEntfernung <= 250
+    );
+
+    setAnzahl(orteRef.current.length);
+    setStatus(t.coolDownLoaded);
+    aktualisiereNaechstenOrt(letzterStandortRef.current);
+  } catch (fehler) {
+    console.error(fehler);
+    setStatus(t.loadingError);
+  }
+}
 
   function aktualisiereNaechstenOrt(meinStandort) {
     setRouteAuswahlOffen(false);
@@ -615,6 +719,13 @@ export default function App() {
             >
               {t.shade}
             </button>
+
+            <button
+  className={modus === "cooldown" ? "quick-button active" : "quick-button"}
+  onClick={ladeAbkuehlen}
+>
+  {t.coolDown}
+</button>
           </div>
 
           <div className="small-actions">
