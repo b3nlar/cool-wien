@@ -347,3 +347,26 @@ body,
   border-radius: 8px;
   padding: 2px 6px !important;
 }
+
+.small-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.info-box {
+  margin-top: 8px;
+  padding: 12px;
+  border-radius: 16px;
+  background: #f7f8fa;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.info-box p {
+  margin: 0 0 8px;
+}
+
+.info-box p:last-child {
+  margin-bottom: 0;
+}

@@ -22,6 +22,7 @@ export default function App() {
   const [naechsterOrt, setNaechsterOrt] = useState(null);
   const [alleSichtbar, setAlleSichtbar] = useState(false);
   const [panelOffen, setPanelOffen] = useState(false);
+  const [infoOffen, setInfoOffen] = useState(false);
 
   useEffect(() => {
     const map = L.map("map", {
@@ -441,11 +442,34 @@ function handleTouchEnd(event) {
           </button>
         </div>
 
-        <button className="secondary-button" onClick={zeigeAlleOrte}>
-          {alleSichtbar ? "Alle ausblenden" : "Alle anzeigen"}
-        </button>
+        <div className="small-actions">
+  <button className="secondary-button" onClick={zeigeAlleOrte}>
+    {alleSichtbar ? "Alle ausblenden" : "Alle anzeigen"}
+  </button>
 
-        <button onClick={sucheMeinenStandort}>In meiner Nähe suchen</button>
+  <button
+    className="secondary-button"
+    onClick={() => setInfoOffen(!infoOffen)}
+  >
+    ℹ️ Info
+  </button>
+</div>
+
+{infoOffen && (
+  <div className="info-box">
+    <p>
+      <strong>Datenschutz:</strong> Cool Wien speichert deinen Standort nicht.
+      Die Suche nach Orten in deiner Nähe passiert nur auf deinem Gerät.
+    </p>
+
+    <p>
+      <strong>Datenquellen:</strong> Stadt Wien – data.wien.gv.at,
+      OpenStreetMap und CARTO.
+    </p>
+  </div>
+)}
+
+<button onClick={sucheMeinenStandort}>In meiner Nähe suchen</button>
 
         {naechsterOrt && (
           <>
