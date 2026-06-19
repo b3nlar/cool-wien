@@ -352,10 +352,12 @@ export default function App() {
   }
 
 function handleTouchStart(event) {
+  event.stopPropagation();
   touchStartYRef.current = event.touches[0].clientY;
 }
 
 function handleTouchEnd(event) {
+  event.stopPropagation();
   if (touchStartYRef.current === null) return;
 
   const startY = touchStartYRef.current;

@@ -299,3 +299,34 @@ button {
   max-height: none;
   overflow: hidden;
 }
+
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  position: fixed;
+  overscroll-behavior: none;
+  touch-action: none;
+}
+
+.app {
+  height: 100dvh;
+  width: 100vw;
+  overflow: hidden;
+  position: fixed;
+  inset: 0;
+}
+
+#map {
+  height: 100dvh;
+  width: 100vw;
+  position: absolute;
+  inset: 0;
+}
+
+.box {
+  touch-action: pan-y;
+  overscroll-behavior: contain;
+}
