@@ -387,71 +387,69 @@ function handleTouchEnd(event) {
   return (
   <div className="app">
     <div
-  className={panelOffen ? "box open" : "box closed"}
-  onTouchStart={handleTouchStart}
-  onTouchEnd={handleTouchEnd}
->
+      className={panelOffen ? "box open" : "box closed"}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
+      <div
+        className="sheet-handle-area"
+        onClick={() => setPanelOffen(!panelOffen)}
+      >
+        <div className="sheet-handle"></div>
+      </div>
+
       <h1>Cool Wien</h1>
 
-      <div
-  className="sheet-handle-area"
-  onClick={() => setPanelOffen(!panelOffen)}
->
-  <div className="sheet-handle"></div>
-</div>
-
-      {panelOffen && (
-        <>
-          <div className="quick-buttons">
-            <button
-              className={
-                modus === "Wasser 💧" ? "quick-button active" : "quick-button"
-              }
-              onClick={ladeWasser}
-            >
-              💧 Wasser
-            </button>
-
-            <button
-              className={
-                modus === "WC 🚻" ? "quick-button active" : "quick-button"
-              }
-              onClick={ladeWCs}
-            >
-              🚻 WC
-            </button>
-
-            <button
-              className={
-                modus === "Schatten 🌳" ? "quick-button active" : "quick-button"
-              }
-              onClick={ladeParks}
-            >
-              🌳 Schatten
-            </button>
-          </div>
-
-          <button className="secondary-button" onClick={zeigeAlleOrte}>
-            {alleSichtbar ? "Alle ausblenden" : "Alle anzeigen"}
+      <div className="sheet-content">
+        <div className="quick-buttons">
+          <button
+            className={
+              modus === "Wasser 💧" ? "quick-button active" : "quick-button"
+            }
+            onClick={ladeWasser}
+          >
+            💧 Wasser
           </button>
 
-          <button onClick={sucheMeinenStandort}>In meiner Nähe suchen</button>
+          <button
+            className={
+              modus === "WC 🚻" ? "quick-button active" : "quick-button"
+            }
+            onClick={ladeWCs}
+          >
+            🚻 WC
+          </button>
 
-          {naechsterOrt && (
-            <>
-              <div className="result">
-                <p className="result-label">Nächster Ort:</p>
-                <p className="result-name">{naechsterOrt.name}</p>
-                <p className="result-distance">
-                  {naechsterOrt.entfernung} m entfernt
-                </p>
-              </div>
+          <button
+            className={
+              modus === "Schatten 🌳" ? "quick-button active" : "quick-button"
+            }
+            onClick={ladeParks}
+          >
+            🌳 Schatten
+          </button>
+        </div>
 
-              <button onClick={routeOeffnen}>Route öffnen</button>
-            </>
-          )}
-        </>
-      )}
+        <button className="secondary-button" onClick={zeigeAlleOrte}>
+          {alleSichtbar ? "Alle ausblenden" : "Alle anzeigen"}
+        </button>
+
+        <button onClick={sucheMeinenStandort}>In meiner Nähe suchen</button>
+
+        {naechsterOrt && (
+          <>
+            <div className="result">
+              <p className="result-label">Nächster Ort:</p>
+              <p className="result-name">{naechsterOrt.name}</p>
+              <p className="result-distance">
+                {naechsterOrt.entfernung} m entfernt
+              </p>
+            </div>
+
+            <button onClick={routeOeffnen}>Route öffnen</button>
+          </>
+        )}
+      </div>
     </div>
 
     <div id="map"></div>

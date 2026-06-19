@@ -260,3 +260,42 @@ button {
 .box {
   -webkit-overflow-scrolling: touch;
 }
+
+.box {
+  overflow: hidden;
+  transition: height 0.28s ease, transform 0.28s ease, padding 0.28s ease;
+}
+
+.box.closed {
+  height: 92px;
+}
+
+.box.open {
+  height: min(58vh, 430px);
+}
+
+.sheet-content {
+  transition: opacity 0.2s ease, transform 0.28s ease;
+}
+
+.box.closed .sheet-content {
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+}
+
+.box.open .sheet-content {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.box.open {
+  max-height: none;
+  overflow: hidden;
+}
+
+.box.closed {
+  max-height: none;
+  overflow: hidden;
+}
