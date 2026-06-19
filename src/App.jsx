@@ -56,6 +56,7 @@ reportTypeLabel: "Typ:",
 reportCoordinatesLabel: "Koordinaten:",
 reportNoteLabel: "Hinweis:",
 reportNotePlaceholder: "Bitte hier beschreiben, was nicht stimmt.",
+coolScore: "Cool Score",
   },
   en: {
     appName: "Cool Vienna",
@@ -105,6 +106,7 @@ reportTypeLabel: "Type:",
 reportCoordinatesLabel: "Coordinates:",
 reportNoteLabel: "Note:",
 reportNotePlaceholder: "Please describe what is wrong here.",
+coolScore: "Cool score",
   },
 };
 
@@ -534,31 +536,59 @@ if (ort.typ === "cooldown") {
     });
   }
 
+  function berechneCoolScore(entfernungZumUser, brunnenEntfernung) {
+  let score = 10;
+
+  if (entfernungZumUser > 300) score -= 1;
+  if (entfernungZumUser > 600) score -= 1;
+  if (entfernungZumUser > 1000) score -= 2;
+
+  if (brunnenEntfernung > 50) score -= 1;
+  if (brunnenEntfernung > 150) score -= 1;
+  if (brunnenEntfernung > 250) score -= 2;
+
+  return Math.max(1, Math.min(10, score));
+}
+
   function findeNaechstenOrt(meinStandort) {
-    let besterOrt = null;
-    let kleinsteEntfernung = Infinity;
+  let besterOrt = null;
+  let besteBewertung = Infinity;
 
-    orteRef.current.forEach((ort) => {
-      const entfernung = mapRef.current.distance(meinStandort, [
-        ort.latitude,
-        ort.longitude,
-      ]);
+  orteRef.current.forEach((ort) => {
+    const entfernung = mapRef.current.distance(meinStandort, [
+      ort.latitude,
+      ort.longitude,
+    ]);
 
-      if (entfernung < kleinsteEntfernung) {
-        kleinsteEntfernung = entfernung;
-        besterOrt = ort;
-      }
-    });
+    let bewertung = entfernung;
 
-    const entfernungGerundet = Math.round(kleinsteEntfernung);
-    const gehzeit = Math.max(1, Math.round(entfernungGerundet / 80));
+    if (ort.typ === "cooldown") {
+      bewertung = entfernung + ort.brunnenEntfernung * 2;
+    }
 
-    return {
-      ...besterOrt,
-      entfernung: entfernungGerundet,
-      gehzeit,
-    };
+    if (bewertung < besteBewertung) {
+      besteBewertung = bewertung;
+      besterOrt = {
+        ...ort,
+        entfernung: Math.round(entfernung),
+      };
+    }
+  });
+
+  const gehzeit = Math.max(1, Math.round(besterOrt.entfernung / 80));
+
+  if (besterOrt.typ === "cooldown") {
+    besterOrt.coolScore = berechneCoolScore(
+      besterOrt.entfernung,
+      besterOrt.brunnenEntfernung
+    );
   }
+
+  return {
+    ...besterOrt,
+    gehzeit,
+  };
+}
 
   function zeigeBeideAufDerKarte(meinStandort, ort) {
     const map = mapRef.current;
@@ -601,7 +631,7 @@ if (ort.typ === "cooldown") {
     ort.gehzeit
   } ${t.walking}${
     ort.typ === "cooldown"
-      ? `<br>${t.fountainNearPark} ${ort.brunnenEntfernung} m ${t.fromPark}`
+      ? `<br>${t.fountainNearPark} ${ort.brunnenEntfernung} m ${t.fromPark}<br>${t.coolScore}: ${ort.coolScore}/10`
       : ""
   }`
 )
@@ -845,10 +875,16 @@ ${t.reportNotePlaceholder}`
                   {naechsterOrt.entfernung} {t.metersAway} · ca.{" "}
                   {naechsterOrt.gehzeit} {t.walking}
                   {naechsterOrt.typ === "cooldown" && (
-  <p className="result-extra">
-    {t.fountainNearPark} {naechsterOrt.brunnenEntfernung} m{" "}
-    {t.fromPark}
-  </p>
+  <>
+    <p className="result-extra">
+      {t.fountainNearPark} {naechsterOrt.brunnenEntfernung} m{" "}
+      {t.fromPark}
+    </p>
+
+    <p className="cool-score">
+      {t.coolScore}: {naechsterOrt.coolScore}/10
+    </p>
+  </>
 )}
                 </p>
               </div>

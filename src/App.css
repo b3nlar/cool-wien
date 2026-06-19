@@ -606,3 +606,15 @@ button:active {
   font-size: 14px;
   padding: 12px 10px;
 }
+
+.cool-score {
+  display: inline-flex;
+  align-items: center;
+  margin: 8px 0 0;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: #e0f2fe;
+  color: #0369a1;
+  font-size: 13px;
+  font-weight: 800;
+}
