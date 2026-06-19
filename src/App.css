@@ -501,3 +501,63 @@ button:active {
   border: 4px solid white;
   box-shadow: 0 3px 14px rgba(0, 122, 255, 0.45);
 }
+
+.route-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.route-buttons button {
+  font-size: 14px;
+  padding: 12px 10px;
+}
+
+.small-actions {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.favoriten-box {
+  margin-top: 8px;
+  padding: 10px;
+  border-radius: 16px;
+  background: #f9fafb;
+  border: 1px solid var(--border);
+}
+
+.empty-text {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.favorit-item {
+  display: grid;
+  grid-template-columns: 1fr 36px;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.favorit-item:last-child {
+  margin-bottom: 0;
+}
+
+.favorit-name {
+  margin: 0;
+  padding: 10px;
+  font-size: 14px;
+  text-align: left;
+  background: white;
+  color: var(--text);
+  box-shadow: none;
+}
+
+.favorit-delete {
+  margin: 0;
+  padding: 10px;
+  background: #fee2e2;
+  color: #991b1b;
+  box-shadow: none;
+}

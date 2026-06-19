@@ -23,6 +23,9 @@ export default function App() {
   const [alleSichtbar, setAlleSichtbar] = useState(false);
   const [panelOffen, setPanelOffen] = useState(false);
   const [infoOffen, setInfoOffen] = useState(false);
+  const [routeAuswahlOffen, setRouteAuswahlOffen] = useState(false);
+  const [favoriten, setFavoriten] = useState([]);
+const [favoritenOffen, setFavoritenOffen] = useState(false);
 
   useEffect(() => {
     const map = L.map("map", {
@@ -56,6 +59,14 @@ L.control
       map.remove();
     };
   }, []);
+
+  useEffect(() => {
+  const gespeicherteFavoriten = localStorage.getItem("coolWienFavoriten");
+
+  if (gespeicherteFavoriten) {
+    setFavoriten(JSON.parse(gespeicherteFavoriten));
+  }
+}, []);
 
   function entferneAlleMarker() {
     alleMarkerRef.current.forEach((marker) => marker.remove());
@@ -150,6 +161,7 @@ L.control
       setAnzahl(orteRef.current.length);
       setStatus("Trinkbrunnen geladen");
       aktualisiereNaechstenOrt(letzterStandortRef.current);
+      setRouteAuswahlOffen(false);
     } catch (fehler) {
       console.error(fehler);
       setStatus("Fehler beim Laden");
@@ -301,10 +313,14 @@ L.control
       }
     });
 
-    return {
-      ...besterOrt,
-      entfernung: Math.round(kleinsteEntfernung),
-    };
+    const entfernungGerundet = Math.round(kleinsteEntfernung);
+const gehzeit = Math.max(1, Math.round(entfernungGerundet / 80));
+
+return {
+  ...besterOrt,
+  entfernung: entfernungGerundet,
+  gehzeit,
+};
   }
 
   function zeigeBeideAufDerKarte(meinStandort, ort) {
@@ -357,7 +373,9 @@ L.control
       icon: zielIcon,
     })
       .addTo(map)
-      .bindPopup(`${ort.name}<br>${ort.entfernung} m entfernt`)
+      .bindPopup(
+  `${ort.name}<br>${ort.entfernung} m entfernt<br>ca. ${ort.gehzeit} Min. zu Fuß`
+)
       .openPopup();
   }
 
@@ -385,16 +403,70 @@ function handleTouchEnd(event) {
   touchStartYRef.current = null;
 }
 
-  function routeOeffnen() {
-    if (!naechsterOrt) return;
+function speichereFavorit() {
+  if (!naechsterOrt) return;
 
-    const latitude = naechsterOrt.latitude;
-    const longitude = naechsterOrt.longitude;
+  const neuerFavorit = {
+    id: `${naechsterOrt.typ}-${naechsterOrt.latitude}-${naechsterOrt.longitude}`,
+    name: naechsterOrt.name,
+    typ: naechsterOrt.typ,
+    latitude: naechsterOrt.latitude,
+    longitude: naechsterOrt.longitude,
+  };
 
-    const url = `https://maps.apple.com/?daddr=${latitude},${longitude}&dirflg=w`;
+  const gibtEsSchon = favoriten.some(
+    (favorit) => favorit.id === neuerFavorit.id
+  );
 
-    window.open(url, "_blank");
-  }
+  if (gibtEsSchon) return;
+
+  const neueFavoriten = [...favoriten, neuerFavorit];
+
+  setFavoriten(neueFavoriten);
+  localStorage.setItem("coolWienFavoriten", JSON.stringify(neueFavoriten));
+}
+
+function entferneFavorit(id) {
+  const neueFavoriten = favoriten.filter((favorit) => favorit.id !== id);
+
+  setFavoriten(neueFavoriten);
+  localStorage.setItem("coolWienFavoriten", JSON.stringify(neueFavoriten));
+}
+
+function zeigeFavoritAufKarte(favorit) {
+  const favoritOrt = {
+    ...favorit,
+    entfernung: 0,
+    gehzeit: 0,
+  };
+
+  setNaechsterOrt(favoritOrt);
+  markiereNaechstenOrt(favoritOrt);
+
+  mapRef.current.setView([favorit.latitude, favorit.longitude], 17);
+}
+
+  function routeAppleMapsOeffnen() {
+  if (!naechsterOrt) return;
+
+  const latitude = naechsterOrt.latitude;
+  const longitude = naechsterOrt.longitude;
+
+  const url = `https://maps.apple.com/?daddr=${latitude},${longitude}&dirflg=w`;
+
+  window.open(url, "_blank");
+}
+
+function routeGoogleMapsOeffnen() {
+  if (!naechsterOrt) return;
+
+  const latitude = naechsterOrt.latitude;
+  const longitude = naechsterOrt.longitude;
+
+  const url = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}&travelmode=walking`;
+
+  window.open(url, "_blank");
+}
 
   return (
   <div className="app">
@@ -449,11 +521,44 @@ function handleTouchEnd(event) {
 
   <button
     className="secondary-button"
+    onClick={() => setFavoritenOffen(!favoritenOffen)}
+  >
+    ⭐ Favoriten
+  </button>
+
+  <button
+    className="secondary-button"
     onClick={() => setInfoOffen(!infoOffen)}
   >
     ℹ️ Info
   </button>
 </div>
+
+{favoritenOffen && (
+  <div className="favoriten-box">
+    {favoriten.length === 0 && (
+      <p className="empty-text">Noch keine Favoriten gespeichert.</p>
+    )}
+
+    {favoriten.map((favorit) => (
+      <div className="favorit-item" key={favorit.id}>
+        <button
+          className="favorit-name"
+          onClick={() => zeigeFavoritAufKarte(favorit)}
+        >
+          {favorit.name}
+        </button>
+
+        <button
+          className="favorit-delete"
+          onClick={() => entferneFavorit(favorit.id)}
+        >
+          ✕
+        </button>
+      </div>
+    ))}
+  </div>
+)}
 
 {infoOffen && (
   <div className="info-box">
@@ -477,11 +582,24 @@ function handleTouchEnd(event) {
               <p className="result-label">Nächster Ort:</p>
               <p className="result-name">{naechsterOrt.name}</p>
               <p className="result-distance">
-                {naechsterOrt.entfernung} m entfernt
-              </p>
+  {naechsterOrt.entfernung} m entfernt · ca. {naechsterOrt.gehzeit} Min. zu Fuß
+</p>
             </div>
 
-            <button onClick={routeOeffnen}>Route öffnen</button>
+            <button className="secondary-button" onClick={speichereFavorit}>
+  ⭐ Favorit speichern
+</button>
+
+            <button onClick={() => setRouteAuswahlOffen(!routeAuswahlOffen)}>
+  Route öffnen
+</button>
+
+{routeAuswahlOffen && (
+  <div className="route-buttons">
+    <button onClick={routeAppleMapsOeffnen}>Apple Maps</button>
+    <button onClick={routeGoogleMapsOeffnen}>Google Maps</button>
+  </div>
+)}
           </>
         )}
       </div>
