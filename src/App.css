@@ -187,3 +187,36 @@ button {
   padding: 10px;
   font-size: 14px;
 }
+
+.panel-toggle {
+  display: none;
+}
+
+.sheet-handle-area {
+  width: 100%;
+  padding: 6px 0 10px;
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.sheet-handle {
+  width: 46px;
+  height: 5px;
+  border-radius: 999px;
+  background: #c7c7cc;
+}
+
+.box.closed {
+  padding: 8px 14px 12px;
+}
+
+.box.closed h1 {
+  font-size: 22px;
+  margin: 0;
+}
+
+.box.open {
+  max-height: 58vh;
+  overflow-y: auto;
+}

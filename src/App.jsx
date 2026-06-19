@@ -234,6 +234,7 @@ export default function App() {
   }
 
   function sucheMeinenStandort() {
+    setPanelOffen(false);
     const map = mapRef.current;
     if (!map) return;
 
@@ -305,9 +306,10 @@ export default function App() {
     ]);
 
     map.fitBounds(bereich, {
-      padding: [80, 80],
-      maxZoom: 17,
-    });
+  paddingTopLeft: [60, 80],
+  paddingBottomRight: [60, 220],
+  maxZoom: 17,
+});
   }
 
   function markiereNaechstenOrt(ort) {
@@ -364,12 +366,12 @@ export default function App() {
     <div className={panelOffen ? "box open" : "box closed"}>
       <h1>Cool Wien</h1>
 
-      <button
-        className="panel-toggle"
-        onClick={() => setPanelOffen(!panelOffen)}
-      >
-        {panelOffen ? "Nach unten klappen" : "Nach oben klappen"}
-      </button>
+      <div
+  className="sheet-handle-area"
+  onClick={() => setPanelOffen(!panelOffen)}
+>
+  <div className="sheet-handle"></div>
+</div>
 
       {panelOffen && (
         <>
