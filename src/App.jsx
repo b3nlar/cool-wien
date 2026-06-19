@@ -25,20 +25,29 @@ export default function App() {
 
   useEffect(() => {
     const map = L.map("map", {
-      zoomControl: false,
-    }).setView([48.2082, 16.3738], 13);
+  zoomControl: false,
+  attributionControl: false,
+}).setView([48.2082, 16.3738], 12);
 
     mapRef.current = map;
 
     L.tileLayer(
-      "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
-      {
-        attribution:
-          "© OpenStreetMap © CARTO | Datenquelle: Stadt Wien - data.wien.gv.at",
-        subdomains: "abcd",
-        maxZoom: 20,
-      }
-    ).addTo(map);
+  "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+  {
+    subdomains: "abcd",
+    maxZoom: 20,
+  }
+).addTo(map);
+
+L.control
+  .attribution({
+    position: "topright",
+    prefix: "Leaflet",
+  })
+  .addAttribution(
+    "© OpenStreetMap © CARTO | Datenquelle: Stadt Wien - data.wien.gv.at"
+  )
+  .addTo(map);
 
     ladeWasser();
 
