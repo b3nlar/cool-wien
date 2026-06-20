@@ -351,11 +351,12 @@ function waehleOrtAus(ort) {
 
   setNaechsterOrt(ausgewaehlterOrt);
   setRouteAuswahlOffen(false);
-  setPanelOffen(true);
 
   markiereNaechstenOrt(ausgewaehlterOrt);
 
-  map.setView([ort.latitude, ort.longitude], 17);
+  map.setView([ort.latitude, ort.longitude], 17, {
+  animate: true,
+});
 }
 
   function zeigeAlleOrte() {
@@ -743,6 +744,20 @@ alleMarkerRef.current.push(marker);
       maxZoom: 17,
     });
   }
+function bringePopupUeberMenue() {
+  const map = mapRef.current;
+  if (!map) return;
+
+  const verschiebung = panelOffen ? 240 : 90;
+
+  setTimeout(() => {
+    map.panBy([0, verschiebung], {
+      animate: true,
+      duration: 0.25,
+    });
+  }, 150);
+}
+
 
   function markiereNaechstenOrt(ort) {
     const map = mapRef.current;
@@ -780,6 +795,8 @@ alleMarkerRef.current.push(marker);
         }
       )
       .openPopup();
+
+      bringePopupUeberMenue();
   }
 
   function handleTouchStart(event) {
