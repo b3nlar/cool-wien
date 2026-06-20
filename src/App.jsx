@@ -83,6 +83,7 @@ const TEXTE = {
     introPrivacy:
       "Dein Standort wird nicht gespeichert und nur auf deinem Gerät verwendet.",
     introButton: "Los geht’s",
+    swipeHint: "Nach unten wischen zum Verkleinern",
   },
 
   en: {
@@ -160,6 +161,7 @@ const TEXTE = {
     introPrivacy:
       "Your location is not stored and is only used on your device.",
     introButton: "Get started",
+    swipeHint: "Swipe down to collapse",
   },
 };
 
@@ -179,7 +181,7 @@ export default function App() {
   const [modus, setModus] = useState("wasser");
   const [naechsterOrt, setNaechsterOrt] = useState(null);
   const [alleSichtbar, setAlleSichtbar] = useState(false);
-  const [panelOffen, setPanelOffen] = useState(false);
+  const [panelOffen, setPanelOffen] = useState(true);
   const [infoOffen, setInfoOffen] = useState(false);
   const [routeAuswahlOffen, setRouteAuswahlOffen] = useState(false);
   const [favoriten, setFavoriten] = useState([]);
@@ -318,6 +320,44 @@ export default function App() {
     setAlleSichtbar(false);
   }
 
+function waehleOrtAus(ort) {
+  const map = mapRef.current;
+  const meinStandort = letzterStandortRef.current;
+
+  if (!map || !ort) return;
+
+  let ausgewaehlterOrt = {
+    ...ort,
+  };
+
+  if (meinStandort) {
+    const entfernung = Math.round(
+      map.distance(meinStandort, [ort.latitude, ort.longitude])
+    );
+
+    ausgewaehlterOrt.entfernung = entfernung;
+    ausgewaehlterOrt.gehzeit = Math.max(1, Math.round(entfernung / 80));
+
+    if (ausgewaehlterOrt.typ === "cooldown") {
+      ausgewaehlterOrt.coolScore = berechneCoolScore(
+        entfernung,
+        ausgewaehlterOrt.brunnenEntfernung
+      );
+    }
+  } else {
+    ausgewaehlterOrt.entfernung = 0;
+    ausgewaehlterOrt.gehzeit = 0;
+  }
+
+  setNaechsterOrt(ausgewaehlterOrt);
+  setRouteAuswahlOffen(false);
+  setPanelOffen(true);
+
+  markiereNaechstenOrt(ausgewaehlterOrt);
+
+  map.setView([ort.latitude, ort.longitude], 17);
+}
+
   function zeigeAlleOrte() {
     const map = mapRef.current;
     if (!map) return;
@@ -339,12 +379,16 @@ export default function App() {
       });
 
       const marker = L.marker([ort.latitude, ort.longitude], {
-        icon: kleinerIcon,
-      })
-        .addTo(map)
-        .bindPopup(ortName(ort));
+  icon: kleinerIcon,
+})
+  .addTo(map)
+  .bindPopup(ortName(ort));
 
-      alleMarkerRef.current.push(marker);
+marker.on("click", () => {
+  waehleOrtAus(ort);
+});
+
+alleMarkerRef.current.push(marker);
     });
 
     setAlleSichtbar(true);
@@ -796,17 +840,8 @@ export default function App() {
   }
 
   function zeigeFavoritAufKarte(favorit) {
-    const favoritOrt = {
-      ...favorit,
-      entfernung: 0,
-      gehzeit: 0,
-    };
-
-    setNaechsterOrt(favoritOrt);
-    markiereNaechstenOrt(favoritOrt);
-
-    mapRef.current.setView([favorit.latitude, favorit.longitude], 17);
-  }
+  waehleOrtAus(favorit);
+}
 
   function ortMelden() {
     if (!naechsterOrt) return;
@@ -933,11 +968,14 @@ ${t.reportNotePlaceholder}`
           <div className="title-block">
             <h1>{t.appName}</h1>
             <p className="claim">{t.claim}</p>
-            <p className="compact-summary">
-              {naechsterOrt
-                ? `${ortName(naechsterOrt)} · ${naechsterOrt.entfernung} ${t.metersAway}`
-                : t.compactDefault}
-            </p>
+
+<p className="swipe-hint">{t.swipeHint}</p>
+
+<p className="compact-summary">
+  {naechsterOrt
+    ? `${ortName(naechsterOrt)} · ${naechsterOrt.entfernung} ${t.metersAway}`
+    : t.compactDefault}
+</p>
           </div>
 
           <button className="language-button" onClick={spracheWechseln}>
@@ -1052,10 +1090,12 @@ ${t.reportNotePlaceholder}`
                 <p className="result-label">{t.nextPlace}</p>
                 <p className="result-name">{ortName(naechsterOrt)}</p>
 
-                <p className="result-distance">
-                  {naechsterOrt.entfernung} {t.metersAway} · ca.{" "}
-                  {naechsterOrt.gehzeit} {t.walking}
-                </p>
+                {naechsterOrt.entfernung > 0 && (
+  <p className="result-distance">
+    {naechsterOrt.entfernung} {t.metersAway} · ca.{" "}
+    {naechsterOrt.gehzeit} {t.walking}
+  </p>
+)}
 
                 {naechsterOrt.typ === "cooldown" && (
                   <>

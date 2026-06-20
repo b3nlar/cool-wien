@@ -271,14 +271,31 @@ button {
 }
 
 .box.open {
-  height: min(58vh, 430px);
+  height: min(68vh, 560px);
+  max-height: none;
+  overflow: hidden;
+  padding: 12px;
 }
 
 .sheet-content {
+  max-height: calc(68vh - 110px);
+  overflow-y: auto;
+  padding-bottom: 12px;
   transition: opacity 0.2s ease, transform 0.28s ease;
+  -webkit-overflow-scrolling: touch;
+}
+
+.sheet-content::-webkit-scrollbar {
+  display: none;
+}
+
+.sheet-content {
+  scrollbar-width: none;
 }
 
 .box.closed .sheet-content {
+  max-height: 0;
+  overflow: hidden;
   opacity: 0;
   transform: translateY(12px);
   pointer-events: none;
@@ -822,4 +839,16 @@ button:active {
 
 .help-button:active {
   transform: scale(0.96);
+}
+
+.swipe-hint {
+  margin: 4px 52px 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.box.closed .swipe-hint {
+  display: none;
 }
