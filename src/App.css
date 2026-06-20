@@ -852,3 +852,77 @@ button:active {
 .box.closed .swipe-hint {
   display: none;
 }
+
+.toast {
+  position: fixed;
+  top: calc(58px + env(safe-area-inset-top));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4000;
+  max-width: calc(100vw - 32px);
+  padding: 11px 14px;
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.92);
+  color: white;
+  font-size: 14px;
+  font-weight: 750;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  pointer-events: none;
+  animation: toast-in 0.18s ease;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.favorite-active {
+  background: #fef3c7;
+  color: #92400e;
+  box-shadow: none;
+}
+
+.kleiner-ort-pin-favorit {
+  border-color: #f59e0b;
+  background: #fffbeb;
+}
+
+.favorite-active {
+  background: #fef3c7;
+  color: #92400e;
+  box-shadow: none;
+}
+
+.kleiner-ort-pin {
+  position: relative;
+}
+
+.kleiner-ort-pin-favorit {
+  border-color: #f59e0b;
+  background: #fffbeb;
+}
+
+.favorit-badge {
+  position: absolute;
+  right: -8px;
+  top: -8px;
+  width: 17px;
+  height: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: white;
+  border: 1px solid #f59e0b;
+  font-size: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.22);
+}

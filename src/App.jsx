@@ -12,6 +12,7 @@ const TEXTE = {
     appName: "Cool Wien",
     claim: "Wasser, Schatten & Abkühlung in deiner Nähe",
     compactDefault: "Finde kühle Orte in Wien",
+    swipeHint: "Nach unten wischen zum Verkleinern",
 
     water: "💧 Wasser",
     wc: "🚻 WC",
@@ -25,6 +26,7 @@ const TEXTE = {
     findNearest: "Nächsten Ort finden",
     nextPlace: "Nächster Ort:",
     saveFavorite: "⭐ Favorit speichern",
+    favoriteSavedButton: "⭐ Gespeichert",
     openRoute: "Route öffnen",
     appleMaps: "Apple Maps",
     googleMaps: "Google Maps",
@@ -83,13 +85,19 @@ const TEXTE = {
     introPrivacy:
       "Dein Standort wird nicht gespeichert und nur auf deinem Gerät verwendet.",
     introButton: "Los geht’s",
-    swipeHint: "Nach unten wischen zum Verkleinern",
+
+    toastSearchingLocation: "📍 Standort wird gesucht …",
+    toastFavoriteSaved: "⭐ Favorit gespeichert",
+    toastFavoriteExists: "⭐ Schon in deinen Favoriten",
+    toastLocationError: "⚠️ Standort konnte nicht gefunden werden",
+    toastNoPlaceSelected: "Bitte zuerst einen Ort auswählen",
   },
 
   en: {
     appName: "Cool Vienna",
     claim: "Water, shade & cool-down spots near you",
     compactDefault: "Find cool places in Vienna",
+    swipeHint: "Swipe down to collapse",
 
     water: "💧 Water",
     wc: "🚻 WC",
@@ -103,6 +111,7 @@ const TEXTE = {
     findNearest: "Find nearest place",
     nextPlace: "Nearest place:",
     saveFavorite: "⭐ Save favorite",
+    favoriteSavedButton: "⭐ Saved",
     openRoute: "Open route",
     appleMaps: "Apple Maps",
     googleMaps: "Google Maps",
@@ -161,7 +170,12 @@ const TEXTE = {
     introPrivacy:
       "Your location is not stored and is only used on your device.",
     introButton: "Get started",
-    swipeHint: "Swipe down to collapse",
+
+    toastSearchingLocation: "📍 Searching your location …",
+    toastFavoriteSaved: "⭐ Favorite saved",
+    toastFavoriteExists: "⭐ Already in your favorites",
+    toastLocationError: "⚠️ Location could not be found",
+    toastNoPlaceSelected: "Please select a place first",
   },
 };
 
@@ -186,6 +200,7 @@ export default function App() {
   const [routeAuswahlOffen, setRouteAuswahlOffen] = useState(false);
   const [favoriten, setFavoriten] = useState([]);
   const [favoritenOffen, setFavoritenOffen] = useState(false);
+  const [toast, setToast] = useState("");
 
   const [sprache, setSprache] = useState(() => {
     const gespeicherteSprache = localStorage.getItem("coolWienSprache");
@@ -258,7 +273,7 @@ export default function App() {
     }
 
     if (naechsterOrt) {
-      markiereNaechstenOrt(naechsterOrt);
+      markiereNaechstenOrt(naechsterOrt, false);
     }
   }, [sprache]);
 
@@ -271,6 +286,14 @@ export default function App() {
   function introSchliessen() {
     setIntroOffen(false);
     localStorage.setItem("coolWienIntroGesehen", "true");
+  }
+
+  function zeigeToast(nachricht) {
+    setToast(nachricht);
+
+    setTimeout(() => {
+      setToast("");
+    }, 2200);
   }
 
   function ortName(ort) {
@@ -303,6 +326,18 @@ export default function App() {
     return ort.name || "";
   }
 
+  function favoritName(favorit) {
+    const name = ortName(favorit);
+
+    if (favorit.typ === "wasser" || favorit.typ === "wc") {
+      return `${name} · ${favorit.latitude.toFixed(
+        4
+      )}, ${favorit.longitude.toFixed(4)}`;
+    }
+
+    return name;
+  }
+
   function ortIcon(ort) {
     if (!ort) return "📍";
 
@@ -314,50 +349,64 @@ export default function App() {
     return "📍";
   }
 
+  function favoritIdFuerOrt(ort) {
+    if (!ort) return "";
+
+    return `${ort.typ}-${ort.latitude}-${ort.longitude}`;
+  }
+
+  function istFavorit(ort) {
+    if (!ort) return false;
+
+    const id = favoritIdFuerOrt(ort);
+
+    return favoriten.some((favorit) => favorit.id === id);
+  }
+
   function entferneAlleMarker() {
     alleMarkerRef.current.forEach((marker) => marker.remove());
     alleMarkerRef.current = [];
     setAlleSichtbar(false);
   }
 
-function waehleOrtAus(ort) {
-  const map = mapRef.current;
-  const meinStandort = letzterStandortRef.current;
+  function waehleOrtAus(ort) {
+    const map = mapRef.current;
+    const meinStandort = letzterStandortRef.current;
 
-  if (!map || !ort) return;
+    if (!map || !ort) return;
 
-  let ausgewaehlterOrt = {
-    ...ort,
-  };
+    const ausgewaehlterOrt = {
+      ...ort,
+    };
 
-  if (meinStandort) {
-    const entfernung = Math.round(
-      map.distance(meinStandort, [ort.latitude, ort.longitude])
-    );
-
-    ausgewaehlterOrt.entfernung = entfernung;
-    ausgewaehlterOrt.gehzeit = Math.max(1, Math.round(entfernung / 80));
-
-    if (ausgewaehlterOrt.typ === "cooldown") {
-      ausgewaehlterOrt.coolScore = berechneCoolScore(
-        entfernung,
-        ausgewaehlterOrt.brunnenEntfernung
+    if (meinStandort) {
+      const entfernung = Math.round(
+        map.distance(meinStandort, [ort.latitude, ort.longitude])
       );
+
+      ausgewaehlterOrt.entfernung = entfernung;
+      ausgewaehlterOrt.gehzeit = Math.max(1, Math.round(entfernung / 80));
+
+      if (ausgewaehlterOrt.typ === "cooldown") {
+        ausgewaehlterOrt.coolScore = berechneCoolScore(
+          entfernung,
+          ausgewaehlterOrt.brunnenEntfernung
+        );
+      }
+    } else {
+      ausgewaehlterOrt.entfernung = 0;
+      ausgewaehlterOrt.gehzeit = 0;
     }
-  } else {
-    ausgewaehlterOrt.entfernung = 0;
-    ausgewaehlterOrt.gehzeit = 0;
+
+    setNaechsterOrt(ausgewaehlterOrt);
+    setRouteAuswahlOffen(false);
+
+    markiereNaechstenOrt(ausgewaehlterOrt, true);
+
+    map.setView([ort.latitude, ort.longitude], 17, {
+      animate: true,
+    });
   }
-
-  setNaechsterOrt(ausgewaehlterOrt);
-  setRouteAuswahlOffen(false);
-
-  markiereNaechstenOrt(ausgewaehlterOrt);
-
-  map.setView([ort.latitude, ort.longitude], 17, {
-  animate: true,
-});
-}
 
   function zeigeAlleOrte() {
     const map = mapRef.current;
@@ -371,25 +420,38 @@ function waehleOrtAus(ort) {
     entferneAlleMarker();
 
     orteRef.current.forEach((ort) => {
+      const istDieserOrtFavorit = istFavorit(ort);
+
       const kleinerIcon = L.divIcon({
         className: "kleiner-ort-icon",
-        html: `<div class="kleiner-ort-pin">${ortIcon(ort)}</div>`,
-        iconSize: [28, 28],
-        iconAnchor: [14, 14],
-        popupAnchor: [0, -14],
+        html: `
+          <div class="kleiner-ort-pin ${
+            istDieserOrtFavorit ? "kleiner-ort-pin-favorit" : ""
+          }">
+            ${ortIcon(ort)}
+            ${
+              istDieserOrtFavorit
+                ? '<span class="favorit-badge">⭐</span>'
+                : ""
+            }
+          </div>
+        `,
+        iconSize: [32, 32],
+        iconAnchor: [16, 16],
+        popupAnchor: [0, -16],
       });
 
       const marker = L.marker([ort.latitude, ort.longitude], {
-  icon: kleinerIcon,
-})
-  .addTo(map)
-  .bindPopup(ortName(ort));
+        icon: kleinerIcon,
+      })
+        .addTo(map)
+        .bindPopup(ortName(ort));
 
-marker.on("click", () => {
-  waehleOrtAus(ort);
-});
+      marker.on("click", () => {
+        waehleOrtAus(ort);
+      });
 
-alleMarkerRef.current.push(marker);
+      alleMarkerRef.current.push(marker);
     });
 
     setAlleSichtbar(true);
@@ -627,8 +689,8 @@ alleMarkerRef.current.push(marker);
     zeigeBeideAufDerKarte(meinStandort, naechster);
 
     setTimeout(() => {
-      markiereNaechstenOrt(naechster);
-    }, 300);
+  markiereNaechstenOrt(naechster, true);
+}, 300);
   }
 
   function sucheMeinenStandort() {
@@ -636,6 +698,8 @@ alleMarkerRef.current.push(marker);
 
     const map = mapRef.current;
     if (!map) return;
+
+    zeigeToast(t.toastSearchingLocation);
 
     map.locate({
       setView: true,
@@ -669,7 +733,7 @@ alleMarkerRef.current.push(marker);
     });
 
     map.once("locationerror", () => {
-      alert(t.locationError);
+      zeigeToast(t.toastLocationError);
     });
   }
 
@@ -744,22 +808,22 @@ alleMarkerRef.current.push(marker);
       maxZoom: 17,
     });
   }
-function bringePopupUeberMenue() {
-  const map = mapRef.current;
-  if (!map) return;
 
-  const verschiebung = panelOffen ? 240 : 90;
+  function bringePopupUeberMenue() {
+    const map = mapRef.current;
+    if (!map) return;
 
-  setTimeout(() => {
-    map.panBy([0, verschiebung], {
-      animate: true,
-      duration: 0.25,
-    });
-  }, 150);
-}
+    const verschiebung = panelOffen ? 240 : 90;
 
+    setTimeout(() => {
+      map.panBy([0, verschiebung], {
+        animate: true,
+        duration: 0.25,
+      });
+    }, 150);
+  }
 
-  function markiereNaechstenOrt(ort) {
+  function markiereNaechstenOrt(ort, sollKarteAusrichten = false) {
     const map = mapRef.current;
     if (!map || !ort) return;
 
@@ -775,28 +839,31 @@ function bringePopupUeberMenue() {
       popupAnchor: [0, -22],
     });
 
+    const entfernungText =
+      ort.entfernung > 0
+        ? `<br>${ort.entfernung} ${t.metersAway}<br>ca. ${ort.gehzeit} ${t.walking}`
+        : "";
+
+    const cooldownText =
+      ort.typ === "cooldown"
+        ? `<br>${t.fountainNearPark} ${ort.brunnenEntfernung} m ${t.fromPark}<br>${t.coolScore}: ${ort.coolScore}/10`
+        : "";
+
     markerRef.current = L.marker([ort.latitude, ort.longitude], {
       icon: zielIcon,
     })
       .addTo(map)
-      .bindPopup(
-        `${ortName(ort)}<br>${ort.entfernung} ${t.metersAway}<br>ca. ${
-          ort.gehzeit
-        } ${t.walking}${
-          ort.typ === "cooldown"
-            ? `<br>${t.fountainNearPark} ${ort.brunnenEntfernung} m ${t.fromPark}<br>${t.coolScore}: ${ort.coolScore}/10`
-            : ""
-        }`,
-        {
-          autoPan: true,
-          keepInView: true,
-          maxWidth: 260,
-          autoPanPadding: [40, 160],
-        }
-      )
+      .bindPopup(`${ortName(ort)}${entfernungText}${cooldownText}`, {
+        autoPan: true,
+        keepInView: true,
+        maxWidth: 260,
+        autoPanPadding: [40, 160],
+      })
       .openPopup();
 
-      bringePopupUeberMenue();
+    if (sollKarteAusrichten) {
+  bringePopupUeberMenue();
+}
   }
 
   function handleTouchStart(event) {
@@ -825,10 +892,20 @@ function bringePopupUeberMenue() {
   }
 
   function speichereFavorit() {
-    if (!naechsterOrt) return;
+    if (!naechsterOrt) {
+      zeigeToast(t.toastNoPlaceSelected);
+      return;
+    }
+
+    const id = favoritIdFuerOrt(naechsterOrt);
+
+    if (istFavorit(naechsterOrt)) {
+      zeigeToast(t.toastFavoriteExists);
+      return;
+    }
 
     const neuerFavorit = {
-      id: `${naechsterOrt.typ}-${naechsterOrt.latitude}-${naechsterOrt.longitude}`,
+      id,
       typ: naechsterOrt.typ,
       latitude: naechsterOrt.latitude,
       longitude: naechsterOrt.longitude,
@@ -837,16 +914,12 @@ function bringePopupUeberMenue() {
       coolScore: naechsterOrt.coolScore || null,
     };
 
-    const gibtEsSchon = favoriten.some(
-      (favorit) => favorit.id === neuerFavorit.id
-    );
-
-    if (gibtEsSchon) return;
-
     const neueFavoriten = [...favoriten, neuerFavorit];
 
     setFavoriten(neueFavoriten);
     localStorage.setItem("coolWienFavoriten", JSON.stringify(neueFavoriten));
+
+    zeigeToast(t.toastFavoriteSaved);
   }
 
   function entferneFavorit(id) {
@@ -857,8 +930,8 @@ function bringePopupUeberMenue() {
   }
 
   function zeigeFavoritAufKarte(favorit) {
-  waehleOrtAus(favorit);
-}
+    waehleOrtAus(favorit);
+  }
 
   function ortMelden() {
     if (!naechsterOrt) return;
@@ -905,9 +978,12 @@ ${t.reportNotePlaceholder}`
 
   return (
     <div className="app">
+      {toast && <div className="toast">{toast}</div>}
+
       <button className="help-button" onClick={() => setIntroOffen(true)}>
-  ?
-</button>
+        ?
+      </button>
+
       {introOffen && (
         <div className="intro-overlay">
           <div className="intro-card">
@@ -984,15 +1060,16 @@ ${t.reportNotePlaceholder}`
         <div className="header-row">
           <div className="title-block">
             <h1>{t.appName}</h1>
+
             <p className="claim">{t.claim}</p>
 
-<p className="swipe-hint">{t.swipeHint}</p>
+            <p className="swipe-hint">{t.swipeHint}</p>
 
-<p className="compact-summary">
-  {naechsterOrt
-    ? `${ortName(naechsterOrt)} · ${naechsterOrt.entfernung} ${t.metersAway}`
-    : t.compactDefault}
-</p>
+            <p className="compact-summary">
+              {naechsterOrt
+                ? `${ortName(naechsterOrt)} · ${naechsterOrt.entfernung} ${t.metersAway}`
+                : t.compactDefault}
+            </p>
           </div>
 
           <button className="language-button" onClick={spracheWechseln}>
@@ -1012,9 +1089,7 @@ ${t.reportNotePlaceholder}`
             </button>
 
             <button
-              className={
-                modus === "wc" ? "quick-button active" : "quick-button"
-              }
+              className={modus === "wc" ? "quick-button active" : "quick-button"}
               onClick={ladeWCs}
             >
               {t.wc}
@@ -1031,9 +1106,7 @@ ${t.reportNotePlaceholder}`
 
             <button
               className={
-                modus === "cooldown"
-                  ? "quick-button active"
-                  : "quick-button"
+                modus === "cooldown" ? "quick-button active" : "quick-button"
               }
               onClick={ladeAbkuehlen}
             >
@@ -1073,7 +1146,7 @@ ${t.reportNotePlaceholder}`
                     className="favorit-name"
                     onClick={() => zeigeFavoritAufKarte(favorit)}
                   >
-                    {ortName(favorit)}
+                    {favoritName(favorit)}
                   </button>
 
                   <button
@@ -1108,11 +1181,11 @@ ${t.reportNotePlaceholder}`
                 <p className="result-name">{ortName(naechsterOrt)}</p>
 
                 {naechsterOrt.entfernung > 0 && (
-  <p className="result-distance">
-    {naechsterOrt.entfernung} {t.metersAway} · ca.{" "}
-    {naechsterOrt.gehzeit} {t.walking}
-  </p>
-)}
+                  <p className="result-distance">
+                    {naechsterOrt.entfernung} {t.metersAway} · ca.{" "}
+                    {naechsterOrt.gehzeit} {t.walking}
+                  </p>
+                )}
 
                 {naechsterOrt.typ === "cooldown" && (
                   <>
@@ -1133,8 +1206,17 @@ ${t.reportNotePlaceholder}`
               </div>
 
               <div className="result-actions">
-                <button className="secondary-button" onClick={speichereFavorit}>
-                  {t.saveFavorite}
+                <button
+                  className={
+                    istFavorit(naechsterOrt)
+                      ? "secondary-button favorite-active"
+                      : "secondary-button"
+                  }
+                  onClick={speichereFavorit}
+                >
+                  {istFavorit(naechsterOrt)
+                    ? t.favoriteSavedButton
+                    : t.saveFavorite}
                 </button>
 
                 <button className="secondary-button" onClick={ortMelden}>
